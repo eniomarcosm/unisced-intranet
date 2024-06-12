@@ -3,7 +3,7 @@ import { Resend } from 'resend'
 
 import VacationConfirmEmail from 'src/emails/vacation_confirm'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend('re_jbFQ5tsZ_6opjFUycxKs5SKJoSDaxpwvT')
 
 export async function POST(request: Request) {
   const { email, name, start_date, end_date, days, subject } = await request.json()
