@@ -45,6 +45,7 @@ import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import { signIn } from 'next-auth/react'
 import { uniscedLogoFullText } from 'src/constants/user'
 import Image from 'next/image'
+import toast from 'react-hot-toast'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -85,8 +86,8 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
 }))
 
 const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(4).required()
+  email: yup.string().email().required('Este campo não pode ser nulo!'),
+  password: yup.string().min(4).required('Este campo não pode ser nulo!')
 })
 
 // const defaultValues = {
@@ -145,8 +146,9 @@ const LoginPage = ({}) => {
     auth.login({ email, password, rememberMe }, () => {
       setError('email', {
         type: 'manual',
-        message: 'Email or Password is invalid'
+        message: 'Email ou Senha Inválidos'
       })
+      toast.error('Email ou Senha Inválidos')
     })
   }
 
@@ -214,8 +216,8 @@ const LoginPage = ({}) => {
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      error={Boolean(errors.email)}
-                      {...(errors.email && { placeholder: String(errors.email.message) })}
+                      error={Boolean(errors?.email)}
+                      {...(errors?.email && { placeholder: errors?.email.message?.toString() })}
                     />
                   )}
                 />
@@ -234,7 +236,7 @@ const LoginPage = ({}) => {
                       onChange={onChange}
                       id='auth-login-v2-password'
                       error={Boolean(errors.password)}
-                      {...(errors.password && { placeholder: String(errors.password.message) })}
+                      {...(errors?.password && { placeholder: errors?.password?.message?.toString() })}
                       type={showPassword ? 'text' : 'password'}
                       InputProps={{
                         endAdornment: (

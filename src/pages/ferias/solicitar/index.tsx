@@ -23,7 +23,7 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import { useAuth } from 'src/hooks/useAuth'
 import { UserStaffData } from '../../colaborador/cadastrar'
 import { firestore } from 'src/configs/firebaseConfig'
-import { collection, doc, getDocs, setDoc } from 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import toast from 'react-hot-toast'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { SelectiveData } from 'src/types/pages/userStaff'
@@ -36,6 +36,7 @@ import IconifyIcon from 'src/@core/components/icon'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import { useRouter } from 'next/router'
+import { VacationRequestData } from 'src/types/pages/generalData'
 
 // Function to check if a given date is a weekend (Saturday or Sunday)
 const isWeekend = (date: Date) => {
@@ -71,13 +72,13 @@ const vacationRequestSchema = z
     } // Error message for start date on weekend
   })
 
-type VacationRequestData = z.infer<typeof vacationRequestSchema>
+type VacationRequest = z.infer<typeof vacationRequestSchema>
 
 export function vacationDays(admitedDate: Date) {
   let vacationDays = 0
   const todayDate = new Date()
 
-  const diffMilliseconds = todayDate.getTime() - admitedDate.getTime()
+  const diffMilliseconds = todayDate?.getTime() - admitedDate?.getTime()
   const diffDays = Math.floor(diffMilliseconds / (24 * 60 * 60 * 1000))
 
   if (diffDays >= 365 && diffDays < 730) {
@@ -89,6 +90,21 @@ export function vacationDays(admitedDate: Date) {
   }
 
   return vacationDays
+}
+
+export function getCurrentYearRemainingVacationDays(totalDays: number, userVacationRequest: VacationRequestData[]) {
+  const today = new Date()
+  const currentYear = today?.getFullYear()
+
+  let remainingDays = totalDays
+
+  userVacationRequest.forEach(request => {
+    if (request?.start_date?.toDate()?.getFullYear() === currentYear) {
+      remainingDays -= request.days
+    }
+  })
+
+  return remainingDays
 }
 
 const StyledGrid = styled(Grid)<GridProps>(({ theme }) => ({
@@ -104,14 +120,18 @@ const StyledGrid = styled(Grid)<GridProps>(({ theme }) => ({
 }))
 
 export default function VacationRequestForm({}) {
-  const { user } = useAuth()
-  const router = useRouter()
-
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
+  //** States */
   const [currentStaff, setCurrentStaff] = useState<UserStaffData>()
   const [departments, setDepartaments] = useState<SelectiveData[]>([])
   const [supervisorStaff, setSupervisorStaff] = useState<UserStaffData[]>([])
+  const [vacationRequest, setVacationRequest] = useState<VacationRequestData[]>([])
+  const [isError, setError] = useState<boolean>(false)
+
+  //** Hooks */
+  const { user } = useAuth()
+  const router = useRouter()
 
   const {
     control,
@@ -121,7 +141,7 @@ export default function VacationRequestForm({}) {
     register,
     watch,
     formState: { errors, isValid }
-  } = useForm<VacationRequestData>({
+  } = useForm<VacationRequest>({
     resolver: zodResolver(vacationRequestSchema),
     defaultValues: {
       start_date: new Date(),
@@ -159,6 +179,28 @@ export default function VacationRequestForm({}) {
     const getData = async () => {
       setIsLoading(true)
       try {
+        const vacationRequestArray: VacationRequestData[] = []
+        const querySnapshot = await getDocs(
+          query(collection(firestore, 'vacation_request'), where('staffId', '==', user!.staffId))
+        )
+        querySnapshot.forEach(doc => {
+          vacationRequestArray.push(doc.data() as VacationRequestData)
+        })
+
+        setVacationRequest(vacationRequestArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+      setIsLoading(false)
+    }
+    getData()
+  }, [user])
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true)
+      try {
         const dptArray: SelectiveData[] = []
         const querySnapshot = await getDocs(collection(firestore, 'departments'))
         querySnapshot.forEach(doc => {
@@ -182,7 +224,8 @@ export default function VacationRequestForm({}) {
     }
   }, [setValue, start_date])
 
-  const [isError, setError] = useState<boolean>(false)
+  const remainingDays =
+    getCurrentYearRemainingVacationDays(vacationDays(currentStaff?.admited_at?.toDate()), vacationRequest) || 0
 
   const handleValueChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = event.target
@@ -190,13 +233,13 @@ export default function VacationRequestForm({}) {
     const days = parseInt(value, 10) | 0
     const endDate = new Date(start_date)
 
-    endDate.setDate(start_date.getDate() + days)
+    endDate.setDate(start_date?.getDate() + days)
 
-    const maxDays = vacationDays(currentStaff?.admited_at?.toDate()) || 0
+    // const maxDays = vacationDays(currentStaff?.admited_at?.toDate()) || 0
 
-    if (days > maxDays) {
+    if (days > remainingDays) {
       setError(true)
-      setValue('days', maxDays)
+      setValue('days', remainingDays)
     } else if (days < 0) {
       setValue('days', 0)
     } else {
@@ -208,7 +251,7 @@ export default function VacationRequestForm({}) {
 
   const isVacationAvailable = true
 
-  const onSubmit = async (values: VacationRequestData) => {
+  const onSubmit = async (values: VacationRequest) => {
     setIsLoading(true)
     console.log(values)
     try {
@@ -251,6 +294,9 @@ export default function VacationRequestForm({}) {
 
     setIsLoading(false)
   }
+
+  const currentYear = new Date().getFullYear()
+  const maxDate = new Date(currentYear, 11, 31)
 
   return (
     <Card>
@@ -313,17 +359,17 @@ export default function VacationRequestForm({}) {
                 </Typography>
                 <Box sx={{ pt: 4 }}>
                   <Box sx={{ display: 'flex', mb: 3 }}>
-                    <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Nome:</Typography>
+                    <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>Nome:</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>{user?.fullName}</Typography>
                   </Box>
                   <Box sx={{ display: 'flex', mb: 3 }}>
-                    <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Departamento:</Typography>
+                    <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>Departamento:</Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
                       {departments.find(dpt => dpt.id === currentStaff?.department)?.name}
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', mb: 3 }}>
-                    <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>
+                    <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>
                       Data de Contratação:
                     </Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
@@ -331,9 +377,19 @@ export default function VacationRequestForm({}) {
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', mb: 3 }}>
-                    <Typography sx={{ mr: 2, fontWeight: 500, color: 'text.secondary' }}>Dias de Direito:</Typography>
+                    <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>
+                      Dias de Direito:
+                    </Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
                       {currentStaff?.admited_at ? vacationDays(currentStaff?.admited_at?.toDate()) : ''}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', mb: 3 }}>
+                    <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>
+                      Dias de Remanescentes:
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                      {currentStaff?.admited_at ? remainingDays : ''}
                     </Typography>
                   </Box>
                 </Box>
@@ -369,6 +425,9 @@ export default function VacationRequestForm({}) {
                         dateFormat='dd/MM/yyyy'
                         onChange={date => onChange(date)}
                         placeholderText='DD/MM/AAAA'
+                        maxDate={maxDate}
+                        yearDropdownItemNumber={1}
+                        scrollableYearDropdown={false}
                         customInput={
                           <CustomInputPicker
                             value={value}

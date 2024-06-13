@@ -58,6 +58,18 @@ const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
   }
 })
 
+const isApprovedAndInMonth = (vrequest: VacationRequestData, month: number) => {
+  const startMonth =
+    vrequest?.start_date instanceof Date ? vrequest?.start_date.getMonth() : vrequest?.start_date?.toDate?.().getMonth()
+  const endMonth =
+    vrequest?.end_date instanceof Date ? vrequest?.end_date.getMonth() : vrequest.end_date?.toDate?.().getMonth()
+
+  const isInMonth = startMonth === month || endMonth === month
+  const isApproved = vrequest?.director?.is_approved === 1
+
+  return isInMonth && isApproved
+}
+
 export default function VacationMap({}) {
   const { user } = useAuth()
   const [organicUnit, setOrganicUnit] = useState<SelectiveData[]>([])
@@ -241,7 +253,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 0 || vrequest.end_date?.toDate()?.getMonth() === 0) {
+              if (isApprovedAndInMonth(vrequest, 0)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -273,7 +285,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 1 || vrequest.end_date?.toDate()?.getMonth() === 1) {
+              if (isApprovedAndInMonth(vrequest, 1)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -305,7 +317,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 2 || vrequest.end_date?.toDate()?.getMonth() === 2) {
+              if (isApprovedAndInMonth(vrequest, 2)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -337,7 +349,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 3 || vrequest.end_date?.toDate()?.getMonth() === 3) {
+              if (isApprovedAndInMonth(vrequest, 3)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -369,7 +381,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 4 || vrequest.end_date?.toDate()?.getMonth() === 4) {
+              if (isApprovedAndInMonth(vrequest, 4)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -401,7 +413,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 5 || vrequest.end_date?.toDate()?.getMonth() === 5) {
+              if (isApprovedAndInMonth(vrequest, 5)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -433,7 +445,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 6 || vrequest.end_date?.toDate()?.getMonth() === 6) {
+              if (isApprovedAndInMonth(vrequest, 6)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -465,7 +477,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 7 || vrequest.end_date?.toDate()?.getMonth() === 7) {
+              if (isApprovedAndInMonth(vrequest, 7)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -497,7 +509,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 8 || vrequest.end_date?.toDate()?.getMonth() === 8) {
+              if (isApprovedAndInMonth(vrequest, 8)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -529,7 +541,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 9 || vrequest.end_date?.toDate()?.getMonth() === 9) {
+              if (isApprovedAndInMonth(vrequest, 9)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -561,7 +573,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 10 || vrequest.end_date?.toDate()?.getMonth() === 10) {
+              if (isApprovedAndInMonth(vrequest, 10)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
@@ -593,7 +605,7 @@ export default function VacationMap({}) {
           {filterVacationRequests
             .filter(dvR => dvR.staffId === params.row.id)
             .map((vrequest, index) => {
-              if (vrequest.start_date?.toDate()?.getMonth() === 11 || vrequest.end_date?.toDate()?.getMonth() === 11) {
+              if (isApprovedAndInMonth(vrequest, 11)) {
                 return (
                   <CustomWidthTooltip
                     key={index}
