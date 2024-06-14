@@ -283,6 +283,7 @@ export default function JustifacaoFaltas({}) {
                 variant='contained'
                 onClick={handlePrint}
                 color='warning'
+                disabled={!(absenceRequest?.director?.is_approved === 1)}
                 startIcon={<IconifyIcon icon={'tabler:printer'} />}
               >
                 Imprimir

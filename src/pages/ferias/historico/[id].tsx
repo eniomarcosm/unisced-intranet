@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
-import { collection, doc, getDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -11,13 +11,13 @@ import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { firestore } from 'src/configs/firebaseConfig'
 import { AbsenceForm } from 'src/documents/form-absence'
 import { UserStaffData } from 'src/pages/colaborador/cadastrar'
-import { VacationRequestData } from 'src/types/pages/generalData'
+import { DepartmentData, PrintDataProps, SelectiveData, VacationRequestData } from 'src/types/pages/generalData'
 
 export default function ViewVacationRequest({}) {
   const [currentVacationRequest, setCurrentVacationRequest] = useState<VacationRequestData>()
   const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
-
-  // const [cargos, setCargos] = useState<SelectiveData[]>([])
+  const [departments, setDepartaments] = useState<DepartmentData[]>([])
+  const [cargos, setCargos] = useState<SelectiveData[]>([])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
@@ -50,6 +50,23 @@ export default function ViewVacationRequest({}) {
   useEffect(() => {
     const getData = async () => {
       try {
+        const dptArray: DepartmentData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'departments'))
+        querySnapshot.forEach(doc => {
+          dptArray.push(doc.data() as DepartmentData)
+        })
+        setDepartaments(dptArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
         setIsLoading(true)
 
         if (currentVacationRequest?.staffId) {
@@ -59,7 +76,7 @@ export default function ViewVacationRequest({}) {
           if (staffSnapshot.exists()) {
             const staffData = staffSnapshot.data() as UserStaffData
             setCurrentStaff(staffData)
-          } else toast.error('Solicitação não encontrada!')
+          }
         }
       } catch (error) {
         toast.error('Erro ao solicitar dados!')
@@ -68,9 +85,26 @@ export default function ViewVacationRequest({}) {
         setIsLoading(false)
       }
     }
-
     getData()
   }, [currentVacationRequest])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const profCategoriesArray: SelectiveData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'job_position'))
+
+        querySnapshot.forEach(doc => {
+          profCategoriesArray.push(doc.data() as SelectiveData)
+        })
+        setCargos(profCategoriesArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
 
   // useEffect(() => {
   //   const getData = async () => {
@@ -97,6 +131,20 @@ export default function ViewVacationRequest({}) {
     documentTitle: 'Relatório-'
   })
 
+  const data: PrintDataProps = {
+    name: `${currentStaf?.name} ${currentStaf?.surname}`,
+    department: departments?.find(dpt => dpt.id === currentStaf?.department)?.name,
+    staff_code: currentStaf?.staff_code,
+    request_date: currentVacationRequest?.request_date?.toDate().toLocaleDateString('pt-BR'),
+    reason: currentVacationRequest?.reason,
+    start_date: currentVacationRequest?.start_date?.toDate().toLocaleDateString('pt-BR'),
+    end_date: currentVacationRequest?.end_date?.toDate().toLocaleDateString('pt-BR'),
+    superior: currentVacationRequest?.superior,
+    job_position: cargos?.find(cargo => cargo.id === currentStaf?.job_position)?.name,
+    human_resources: currentVacationRequest?.human_resources,
+    director: currentVacationRequest?.director
+  }
+
   return (
     <Fragment>
       <ModalProgressBar open={isLoading} />
@@ -105,26 +153,25 @@ export default function ViewVacationRequest({}) {
         <Divider />
         <CardContent>
           <Grid container spacing={5}>
-            {currentVacationRequest?.human_resources?.is_approved === 1 && (
-              <Grid item xs={12} sm={12}>
-                {/* <IconButton title='Imprimir' color='warning'>
+            <Grid item xs={12} sm={12}>
+              {/* <IconButton title='Imprimir' color='warning'>
                  <IconifyIcon icon={'tabler:printer'} />
               </IconButton> */}
-                <Button
-                  variant='contained'
-                  onClick={handlePrint}
-                  color='warning'
-                  startIcon={<IconifyIcon icon={'tabler:printer'} />}
-                >
-                  Imprimir
-                </Button>
-                {currentStaf && (
-                  <div style={{ display: 'none' }}>
-                    <AbsenceForm ref={componentRef} data={currentStaf} />
-                  </div>
-                )}
-              </Grid>
-            )}
+              <Button
+                variant='contained'
+                onClick={handlePrint}
+                disabled={!(currentVacationRequest?.director?.is_approved === 1)}
+                color='warning'
+                startIcon={<IconifyIcon icon={'tabler:printer'} />}
+              >
+                Imprimir
+              </Button>
+              {currentStaf && (
+                <div style={{ display: 'none' }}>
+                  <AbsenceForm ref={componentRef} data={data} />
+                </div>
+              )}
+            </Grid>
 
             {/* <Grid item xs={12} sm={4}>
               <CustomTextField
@@ -288,7 +335,13 @@ export default function ViewVacationRequest({}) {
                 fullWidth
                 disabled
                 label='Estado do Superior'
-                value={currentVacationRequest?.superior?.is_approved}
+                value={
+                  currentVacationRequest?.superior?.is_approved === 1
+                    ? 'Aprovado'
+                    : currentVacationRequest?.superior?.is_approved === 2
+                    ? 'Reprovado'
+                    : undefined
+                }
               />
             </Grid>
 
@@ -297,7 +350,13 @@ export default function ViewVacationRequest({}) {
                 fullWidth
                 disabled
                 label='Estado dos Recursos Humanos'
-                value={currentVacationRequest?.human_resources?.is_approved}
+                value={
+                  currentVacationRequest?.human_resources?.is_approved === 1
+                    ? 'Aprovado'
+                    : currentVacationRequest?.human_resources?.is_approved === 2
+                    ? 'Reprovado'
+                    : undefined
+                }
               />
             </Grid>
 
@@ -306,7 +365,13 @@ export default function ViewVacationRequest({}) {
                 fullWidth
                 disabled
                 label='Estado da Direcção'
-                value={currentVacationRequest?.director?.is_approved}
+                value={
+                  currentVacationRequest?.director?.is_approved === 1
+                    ? 'Aprovado'
+                    : currentVacationRequest?.director?.is_approved === 2
+                    ? 'Reprovado'
+                    : undefined
+                }
               />
             </Grid>
             <Grid item lg={4} sm={4}>

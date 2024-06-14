@@ -318,14 +318,14 @@ export default function VacationRequestForm({}) {
                 {user?.avatar ? (
                   <CustomAvatar
                     src={user!.avatar}
-                    variant='rounded'
+                    variant='circular'
                     alt={user.fullName}
                     sx={{ width: 150, height: 150, mb: 2 }}
                   />
                 ) : (
                   <CustomAvatar
                     skin='light'
-                    variant='rounded'
+                    variant='circular'
                     sx={{ width: 100, height: 100, mb: 2, fontSize: '3rem' }}
                   >
                     {getInitials(user!.fullName)}

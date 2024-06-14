@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
+import { collection, doc, getDoc } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -11,13 +11,14 @@ import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { firestore } from 'src/configs/firebaseConfig'
 import { AbsenceForm } from 'src/documents/form-absence'
 import { UserStaffData } from 'src/pages/colaborador/cadastrar'
-import { AbsenceRequestData, SelectiveData } from 'src/types/pages/generalData'
+import { AbsenceRequestData } from 'src/types/pages/generalData'
 
 export default function ViewVacationRequest({}) {
   const [absenceRequest, setAbsenceRequest] = useState<AbsenceRequestData>()
   const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [cargos, setCargos] = useState<SelectiveData[]>([])
+
+  // const [cargos, setCargos] = useState<SelectiveData[]>([])
 
   const router = useRouter()
   const { id } = router.query
@@ -47,23 +48,23 @@ export default function ViewVacationRequest({}) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const profCategoriesArray: SelectiveData[] = []
-        const querySnapshot = await getDocs(collection(firestore, 'job_position'))
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     try {
+  //       const profCategoriesArray: SelectiveData[] = []
+  //       const querySnapshot = await getDocs(collection(firestore, 'job_position'))
 
-        querySnapshot.forEach(doc => {
-          profCategoriesArray.push(doc.data() as SelectiveData)
-        })
-        setCargos(profCategoriesArray)
-      } catch (error) {
-        toast.error('Erro ao solicitar dados!')
-        console.log(error)
-      }
-    }
-    getData()
-  }, [])
+  //       querySnapshot.forEach(doc => {
+  //         profCategoriesArray.push(doc.data() as SelectiveData)
+  //       })
+  //       setCargos(profCategoriesArray)
+  //     } catch (error) {
+  //       toast.error('Erro ao solicitar dados!')
+  //       console.log(error)
+  //     }
+  //   }
+  //   getData()
+  // }, [])
 
   useEffect(() => {
     const getData = async () => {
@@ -112,6 +113,7 @@ export default function ViewVacationRequest({}) {
                 variant='contained'
                 onClick={handlePrint}
                 color='warning'
+                disabled={!(absenceRequest?.director?.is_approved === 1)}
                 startIcon={<IconifyIcon icon={'tabler:printer'} />}
               >
                 Imprimir
@@ -121,51 +123,6 @@ export default function ViewVacationRequest({}) {
                   <AbsenceForm ref={componentRef} data={currentStaf} />
                 </div>
               )}
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Nome Completo'
-                value={`${currentStaf?.name} ${currentStaf?.surname}`}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Cargo'
-                value={cargos.find(cargo => cargo.id === currentStaf?.job_position)?.name}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Códico do Trabalhador' value={currentStaf?.staff_code} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Contacto' value={currentStaf?.contact1} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Contacto Alternativo' value={`${currentStaf?.contact2}`} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Data de Contratação'
-                value={`${currentStaf?.admited_at?.toDate().toLocaleDateString('pt-BR')}`}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Email' value={`${currentStaf?.personal_email}`} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Sexo' value={`${currentStaf?.gender}`} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled value='' label='Assinatura' />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Divider>Data de Ausência</Divider>
             </Grid>
             <Grid item xs={12} sm={4}>
               <CustomTextField
@@ -183,18 +140,13 @@ export default function ViewVacationRequest({}) {
                 value={absenceRequest?.end_date?.toDate().toLocaleDateString('pt-BR')}
               />
             </Grid>
-            {/* <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={4}>
               <CustomTextField fullWidth disabled label='Número de Dias Solicitados' value={absenceRequest?.days} />
-            </Grid> */}
+            </Grid>
 
-            {/* <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Número de Dias Restantes'
-                value={absenceRequest?.days}
-              />
-            </Grid> */}
+            <Grid item xs={12} sm={8}>
+              <CustomTextField fullWidth disabled label='Motivos' multiline rows={2} value={absenceRequest?.reason} />
+            </Grid>
 
             <Grid item xs={12} sm={12}>
               <Divider>Detalhes da Solicitação</Divider>

@@ -319,6 +319,7 @@ export default function ViewVacationRequest({}) {
                 variant='contained'
                 onClick={handlePrint}
                 color='warning'
+                disabled={!(currentVacationRequest?.director?.is_approved === 1)}
                 startIcon={<IconifyIcon icon={'tabler:printer'} />}
               >
                 Imprimir
