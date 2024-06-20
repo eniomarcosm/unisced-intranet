@@ -366,12 +366,6 @@ const Home = ({}) => {
                     }
                   }
                 }}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true
-                  }
-                }}
                 pageSizeOptions={[5, 15, 50]}
               />
             </Grid>
@@ -395,12 +389,6 @@ const Home = ({}) => {
                     paginationModel: {
                       pageSize: 5
                     }
-                  }
-                }}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true
                   }
                 }}
                 pageSizeOptions={[5, 15, 50]}
