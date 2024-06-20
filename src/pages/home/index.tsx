@@ -91,6 +91,19 @@ const Home = ({}) => {
 
   const columns: GridColDef[] = [
     {
+      flex: 0.2,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'Acções',
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          <IconButton LinkComponent={Link} href={`/ferias/historico/${params.row.id}`} color='success'>
+            <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
+          </IconButton>
+        </>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 120,
       field: 'request_date',
@@ -185,7 +198,10 @@ const Home = ({}) => {
           )}
         </Typography>
       )
-    },
+    }
+  ]
+
+  const columns2: GridColDef[] = [
     {
       flex: 0.2,
       minWidth: 100,
@@ -193,15 +209,12 @@ const Home = ({}) => {
       headerName: 'Acções',
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <IconButton LinkComponent={Link} href={`/ferias/historico/${params.row.id}`} color='success'>
+          <IconButton color='info' LinkComponent={Link} href={`/faltas/historico/${params.row.id}`}>
             <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
           </IconButton>
         </>
       )
-    }
-  ]
-
-  const columns2: GridColDef[] = [
+    },
     {
       flex: 0.3,
       minWidth: 120,
@@ -297,19 +310,6 @@ const Home = ({}) => {
             <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
           )}
         </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'id',
-      headerName: 'Acções',
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          <IconButton color='info' LinkComponent={Link} href={`/faltas/historico/${params.row.id}`}>
-            <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
-          </IconButton>
-        </>
       )
     }
   ]
