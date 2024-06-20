@@ -345,7 +345,7 @@ export default function JustifacaoFaltas({}) {
                 <CustomTextField
                   fullWidth
                   disabled
-                  label='Data de Início'
+                  label='Data de Ausência'
                   value={absenceRequest?.start_date?.toDate().toLocaleDateString('pt-BR')}
                 />
               </Grid>
@@ -353,7 +353,7 @@ export default function JustifacaoFaltas({}) {
                 <CustomTextField
                   fullWidth
                   disabled
-                  label='Data de Término'
+                  label='Ao Dia'
                   value={absenceRequest?.end_date?.toDate().toLocaleDateString('pt-BR')}
                 />
               </Grid>
@@ -379,7 +379,7 @@ export default function JustifacaoFaltas({}) {
                   minRows={2}
                   fullWidth
                   disabled
-                  label='Parecer do Superior'
+                  label='Observação do Superior'
                   value={absenceRequest?.superior?.comment}
                 />
               </Grid>
@@ -389,7 +389,7 @@ export default function JustifacaoFaltas({}) {
                   minRows={2}
                   fullWidth
                   disabled
-                  label='Parecer dos Recursos Humanos'
+                  label='Observação dos Recursos Humanos'
                   value={absenceRequest?.human_resources?.comment}
                 />
               </Grid>
@@ -399,7 +399,7 @@ export default function JustifacaoFaltas({}) {
                   minRows={2}
                   fullWidth
                   disabled
-                  label='Parecer da Direcção'
+                  label='Observação da Direcção'
                   value={absenceRequest?.director?.comment}
                 />
               </Grid>
@@ -435,7 +435,7 @@ export default function JustifacaoFaltas({}) {
                 <CustomTextField
                   fullWidth
                   disabled
-                  label='Estado do Superior'
+                  label='Parecer do Superior'
                   value={
                     absenceRequest?.superior?.is_approved === 1
                       ? 'Aprovado'
@@ -449,7 +449,7 @@ export default function JustifacaoFaltas({}) {
                 <CustomTextField
                   fullWidth
                   disabled
-                  label='Estado dos Recursos Humanos'
+                  label='Parecer dos Recursos Humanos'
                   value={
                     absenceRequest?.human_resources?.is_approved === 1
                       ? 'Aprovado'
@@ -463,7 +463,7 @@ export default function JustifacaoFaltas({}) {
                 <CustomTextField
                   fullWidth
                   disabled
-                  label='Estado da Direcção'
+                  label='Parecer da Direcção'
                   value={
                     absenceRequest?.director?.is_approved === 1
                       ? 'Aprovado'

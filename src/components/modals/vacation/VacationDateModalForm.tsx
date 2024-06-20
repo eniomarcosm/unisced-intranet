@@ -18,6 +18,9 @@ import Icon from 'src/@core/components/icon'
 import IconifyIcon from 'src/@core/components/icon'
 import { Box } from '@mui/system'
 import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
+import { getCurrentYearRemainingVacationDays, vacationDays } from 'src/pages/ferias/solicitar'
+import { UserStaffData } from 'src/pages/colaborador/cadastrar'
+import { AbsenceRequestData, VacationRequestData } from 'src/types/pages/generalData'
 
 import DatePicker, { registerLocale } from 'react-datepicker'
 import ptBR from 'date-fns/locale/pt-BR' // the locale you want
@@ -26,8 +29,8 @@ registerLocale('ptBR', ptBR) // register it with the name you want
 
 // Define the Zod schema and types for form data
 const vacationDateSchema = z.object({
-  start_date: z.any(),
-  end_date: z.any().optional(),
+  start_date: z.date(),
+  end_date: z.date().optional(),
   days: z.number(),
   reason: z.string().optional()
 })
@@ -38,15 +41,21 @@ type DateModalFormProps = {
   isOpen: boolean
   onClose: () => void
   onSubmit: (data: FieldValues) => void // Update onSubmit prop type
-  values: Partial<{
-    start_date: Date
-    end_date: Date
-    days: number
-    reason: string
-  }>
+  currentStaff?: UserStaffData
+  values?: VacationRequestData
+  vacationRequest: VacationRequestData[]
+  absenceRequest: AbsenceRequestData[]
 }
 
-const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, onSubmit }) => {
+const VacationDateModalForm: React.FC<DateModalFormProps> = ({
+  values,
+  isOpen,
+  currentStaff,
+  absenceRequest,
+  vacationRequest,
+  onClose,
+  onSubmit
+}) => {
   const {
     control,
     setValue,
@@ -56,28 +65,70 @@ const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, 
     watch
   } = useForm<VacationDate>({
     resolver: zodResolver(vacationDateSchema),
-    defaultValues: {
-      start_date: values?.start_date,
-      end_date: values?.end_date,
-      days: values?.days,
-      reason: values?.reason
-    }
+    defaultValues: {}
   })
 
   const { start_date, end_date, days } = watch()
 
   useEffect(() => {
-    reset(values)
+    const newValues = {
+      ...values,
+      start_date: values?.start_date.toDate(),
+      end_date: values?.end_date.toDate()
+    }
+
+    reset(newValues)
   }, [reset, values])
 
-  const handleValueChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target
-    const days = parseInt(value, 10) | 0
-    setValue('days', days)
+  useEffect(() => {
+    if (start_date) {
+      setValue('end_date', start_date)
 
+      setValue('days', values!.days)
+    }
+  }, [setValue, start_date, values])
+
+  const filterAbsenceRequests = absenceRequest?.filter(aRequest => {
+    const currentYear = new Date().getFullYear()
+
+    return currentYear === aRequest?.request_date?.toDate().getFullYear()
+  })
+
+  const absencedDaysThisYear = filterAbsenceRequests?.reduce(
+    (totalDays, obj) => totalDays + obj.human_resources.day_vacations,
+    0
+  )
+
+  const remainingDays =
+    getCurrentYearRemainingVacationDays(vacationDays(currentStaff?.admited_at?.toDate()), vacationRequest) -
+      absencedDaysThisYear || 0
+
+  const handleValueChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { value } = event.target
+
+    const days = parseInt(value, 10) | 0
     const endDate = new Date(start_date)
-    endDate.setDate(start_date.getDate() + days)
-    setValue('end_date', endDate)
+
+    endDate.setDate(start_date?.getDate() + days)
+
+    // const maxDays = vacationDays(currentStaff?.admited_at?.toDate()) || 0
+
+    const newRemaing = remainingDays + values!.days
+
+    console.log(remainingDays)
+
+    if (days > newRemaing) {
+      // setError(true)
+      setValue('days', newRemaing)
+    } else if (days < 0) {
+      console.log('Hello')
+
+      setValue('days', 0)
+    } else {
+      // setError(false)
+      setValue('end_date', endDate)
+      setValue('days', days)
+    }
   }
 
   return (
@@ -88,7 +139,7 @@ const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, 
           <DialogTitle id='customized-dialog-title' sx={{ p: 4 }}>
             <Box display='flex' justifyContent='space-between' alignItems='center'>
               <Typography variant='h6' component='span'>
-                Actualização dos Dias de Férias
+                Actualização da Data de Férias
               </Typography>
               <IconButton aria-label='close' color='error' onClick={onClose}>
                 <Icon icon='tabler:x' fontSize='1.25rem' />
@@ -104,9 +155,9 @@ const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, 
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <DatePicker
+                      locale='ptBR'
                       selected={value}
                       showYearDropdown
-                      locale='ptBR'
                       showMonthDropdown
                       dateFormat='dd/MM/yyyy'
                       onChange={date => onChange(date)}
@@ -137,12 +188,16 @@ const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, 
               </Grid>
               <Grid item xs={12} sm={12}>
                 <CustomTextField
-                  fullWidth
-                  label='Dias de Gozo'
-                  value={days}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => handleValueChange(e)}
+                  label='Dias de Gozo:'
                   required
+                  fullWidth
                   type='number'
+                  error={!!errors?.days}
+                  placeholder={errors?.days?.message}
+                  value={days}
+                  onChange={event => handleValueChange(event)}
+
+                  // {...register('days', { required: true })}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
@@ -152,10 +207,10 @@ const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, 
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <DatePicker
+                      locale='ptBR'
                       selected={value}
                       showYearDropdown
                       showMonthDropdown
-                      locale='ptBR'
                       disabled
                       dateFormat='dd/MM/yyyy'
                       onChange={date => onChange(date)}
@@ -198,4 +253,4 @@ const DateModalForm: React.FC<DateModalFormProps> = ({ values, isOpen, onClose, 
   )
 }
 
-export default DateModalForm
+export default VacationDateModalForm

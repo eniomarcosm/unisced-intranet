@@ -23,7 +23,7 @@ import { getInitials } from 'src/@core/utils/get-initials'
 import { useAuth } from 'src/hooks/useAuth'
 import { UserStaffData } from '../../colaborador/cadastrar'
 import { firestore } from 'src/configs/firebaseConfig'
-import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
+import { collection, doc, getDocs, orderBy, query, setDoc, where } from 'firebase/firestore'
 import toast from 'react-hot-toast'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { SelectiveData } from 'src/types/pages/userStaff'
@@ -31,12 +31,18 @@ import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
-import DatePicker from 'react-datepicker'
 import IconifyIcon from 'src/@core/components/icon'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import { useRouter } from 'next/router'
-import { VacationRequestData } from 'src/types/pages/generalData'
+import { AbsenceRequestData, VacationRequestData } from 'src/types/pages/generalData'
+import { isWeekday } from 'src/pages/faltas/justificar'
+
+// ** keynote: Mudar idioma de datepicker
+import DatePicker, { registerLocale } from 'react-datepicker'
+import ptBR from 'date-fns/locale/pt-BR' // the locale you want
+
+registerLocale('ptBR', ptBR) // register it with the name you want
 
 // Function to check if a given date is a weekend (Saturday or Sunday)
 const isWeekend = (date: Date) => {
@@ -129,6 +135,8 @@ export default function VacationRequestForm({}) {
   const [vacationRequest, setVacationRequest] = useState<VacationRequestData[]>([])
   const [isError, setError] = useState<boolean>(false)
 
+  const [absenceRequest, setAbsenceRequest] = useState<AbsenceRequestData[]>([])
+
   //** Hooks */
   const { user } = useAuth()
   const router = useRouter()
@@ -201,6 +209,32 @@ export default function VacationRequestForm({}) {
     const getData = async () => {
       setIsLoading(true)
       try {
+        const absenceRequestArray: AbsenceRequestData[] = []
+        const querySnapshot = await getDocs(
+          query(
+            collection(firestore, 'absence_justification'),
+            where('staffId', '==', user!.staffId),
+            orderBy('request_date', 'desc')
+          )
+        )
+        querySnapshot.forEach(doc => {
+          absenceRequestArray.push(doc.data() as AbsenceRequestData)
+        })
+
+        setAbsenceRequest(absenceRequestArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+      setIsLoading(false)
+    }
+    getData()
+  }, [user])
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true)
+      try {
         const dptArray: SelectiveData[] = []
         const querySnapshot = await getDocs(collection(firestore, 'departments'))
         querySnapshot.forEach(doc => {
@@ -224,8 +258,20 @@ export default function VacationRequestForm({}) {
     }
   }, [setValue, start_date])
 
+  const filterAbsenceRequests = absenceRequest.filter(aRequest => {
+    const currentYear = new Date().getFullYear()
+
+    return currentYear === aRequest?.request_date?.toDate().getFullYear()
+  })
+
+  const absencedDaysThisYear =
+    filterAbsenceRequests.reduce((totalDays, obj) => totalDays + obj.human_resources?.day_vacations, 0) || 0
+
   const remainingDays =
-    getCurrentYearRemainingVacationDays(vacationDays(currentStaff?.admited_at?.toDate()), vacationRequest) || 0
+    getCurrentYearRemainingVacationDays(vacationDays(currentStaff?.admited_at?.toDate()), vacationRequest) -
+      absencedDaysThisYear || 0
+
+  console.log('remaining', remainingDays)
 
   const handleValueChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value } = event.target
@@ -386,6 +432,14 @@ export default function VacationRequestForm({}) {
                   </Box>
                   <Box sx={{ display: 'flex', mb: 3 }}>
                     <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>
+                      Dias Descontados por Faltas:
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary' }}>
+                      {currentStaff?.admited_at ? absencedDaysThisYear : ''}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', mb: 3 }}>
+                    <Typography sx={{ mr: 2, fontWeight: 'bold', color: 'text.secondary' }}>
                       Dias de Remanescentes:
                     </Typography>
                     <Typography sx={{ color: 'text.secondary' }}>
@@ -419,6 +473,7 @@ export default function VacationRequestForm({}) {
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <DatePicker
+                        locale='ptBR'
                         selected={value}
                         showYearDropdown
                         showMonthDropdown
@@ -428,6 +483,7 @@ export default function VacationRequestForm({}) {
                         maxDate={maxDate}
                         yearDropdownItemNumber={1}
                         scrollableYearDropdown={false}
+                        filterDate={isWeekday}
                         customInput={
                           <CustomInputPicker
                             value={value}
@@ -474,6 +530,7 @@ export default function VacationRequestForm({}) {
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <DatePicker
+                        locale='ptBR'
                         selected={value}
                         showYearDropdown
                         showMonthDropdown

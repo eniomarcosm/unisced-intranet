@@ -78,7 +78,7 @@ const ModalForm: React.FC<ModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
                   control={control}
                   render={({ field }) => (
                     <CustomTextField
-                      label='Estado'
+                      label='Parecer'
                       fullWidth
                       required
                       defaultValue={0}

@@ -4,7 +4,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import CustomChip from 'src/@core/components/mui/chip'
 import { VacationRequestData } from 'src/types/pages/generalData'
 import { firestore } from 'src/configs/firebaseConfig'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import toast from 'react-hot-toast'
 import { vacation_status } from 'src/constants/vacation'
 import IconifyIcon from 'src/@core/components/icon'
@@ -28,7 +28,11 @@ export default function MyVacation({}) {
       try {
         const vacationRequestArray: VacationRequestData[] = []
         const querySnapshot = await getDocs(
-          query(collection(firestore, 'vacation_request'), where('staffId', '==', user!.staffId))
+          query(
+            collection(firestore, 'vacation_request'),
+            where('staffId', '==', user!.staffId),
+            orderBy('request_date', 'desc')
+          )
         )
         querySnapshot.forEach(doc => {
           vacationRequestArray.push(doc.data() as VacationRequestData)
@@ -70,6 +74,30 @@ export default function MyVacation({}) {
 
   const columns: GridColDef[] = [
     {
+      flex: 0.2,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'Acções',
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          <IconButton LinkComponent={Link} href={`/ferias/historico/${params.row.id}`} color='success'>
+            <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
+          </IconButton>
+        </>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 120,
+      field: 'request_date',
+      headerName: 'Data de Solicitação',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row?.request_date?.toDate().toLocaleDateString('pt-BR')}
+        </Typography>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 120,
       field: 'start_date',
@@ -102,17 +130,7 @@ export default function MyVacation({}) {
         </Typography>
       )
     },
-    {
-      flex: 0.3,
-      minWidth: 120,
-      field: 'request_date',
-      headerName: 'Data de Solicitação',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.request_date?.toDate().toLocaleDateString('pt-BR')}
-        </Typography>
-      )
-    },
+
     {
       flex: 0.2,
       minWidth: 100,
@@ -162,19 +180,6 @@ export default function MyVacation({}) {
             <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
           )}
         </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'id',
-      headerName: 'Acções',
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          <IconButton LinkComponent={Link} href={`/ferias/historico/${params.row.id}`} color='success'>
-            <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
-          </IconButton>
-        </>
       )
     }
   ]

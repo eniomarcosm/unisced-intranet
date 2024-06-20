@@ -15,7 +15,6 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { ButtonStyled, ImgStyled, ResetButtonStyled, UserStaffData } from '../colaborador/cadastrar'
-import DatePicker from 'react-datepicker'
 import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -27,18 +26,33 @@ import toast from 'react-hot-toast'
 import { collection, doc, getDocs, setDoc } from 'firebase/firestore'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { useRouter } from 'next/router'
+import { SelectiveData } from 'src/types/pages/generalData'
+import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
+
+import DatePicker, { registerLocale } from 'react-datepicker'
+import ptBR from 'date-fns/locale/pt-BR' // the locale you want
+
+registerLocale('ptBR', ptBR) // register it with the name you want
 
 const absenceSchema = z.object({
   id: z.string().optional(),
   reason: z.string(),
   start_date: z.any(),
   end_date: z.any(),
-  evidenceURL: z.any()
+  evidenceURL: z.any(),
+  comment: z.string()
 })
 
+export const isWeekday = (date: Date) => {
+  const day = date.getDay()
+
+  return day !== 0 && day !== 6
+}
+
 export type AbsenceData = z.infer<typeof absenceSchema>
-export default function JustificarFalta() {
+export default function JustificarFalta({}) {
   const [currentStaff, setCurrentStaff] = useState<UserStaffData>()
+  const [motivos, setMotivos] = useState<SelectiveData[]>([])
 
   const {
     control,
@@ -73,6 +87,24 @@ export default function JustificarFalta() {
     }
     getData()
   }, [user])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const reasonsArray: SelectiveData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'absence_reasons'))
+
+        querySnapshot.forEach(doc => {
+          reasonsArray.push(doc.data() as SelectiveData)
+        })
+        setMotivos(reasonsArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
 
   // ** Image Uploader
 
@@ -206,6 +238,8 @@ export default function JustificarFalta() {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <DatePicker
+                  locale="ptBR"
+
                     selected={value}
                     showYearDropdown
                     showMonthDropdown
@@ -213,6 +247,7 @@ export default function JustificarFalta() {
                     dateFormat='dd/MM/yyyy'
                     onChange={(e: any) => onChange(e)}
                     placeholderText='DD/MM/AAAA'
+                    filterDate={isWeekday}
                     customInput={
                       <CustomInputPicker
                         value={value}
@@ -243,17 +278,21 @@ export default function JustificarFalta() {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <DatePicker
+                  locale="ptBR"
+
                     selected={value}
                     showYearDropdown
                     showMonthDropdown
+                    required
                     dateFormat='dd/MM/yyyy'
                     onChange={(e: any) => onChange(e)}
                     placeholderText='DD/MM/AAAA'
+                    filterDate={isWeekday}
                     customInput={
                       <CustomInputPicker
                         value={value}
                         onChange={onChange}
-                        label='Data de Regresso'
+                        label='Ao Dia'
                         error={Boolean(errors.end_date)}
                         aria-describedby='data-realiazacao'
                         {...(errors.end_date && { helperText: 'Este campo é obrigatório' })}
@@ -272,19 +311,46 @@ export default function JustificarFalta() {
                 )}
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <Controller
                 name='reason'
                 control={control}
                 render={({ field }) => (
+                  <CustomAutocomplete
+                    fullWidth
+                    options={motivos}
+                    value={motivos?.find(option => option.id === field.value) || null}
+                    getOptionLabel={option => `${option.name}`}
+                    onChange={(_, selectedOptions) => {
+                      field.onChange(selectedOptions ? selectedOptions.id : '')
+                    }}
+                    renderInput={params => (
+                      <CustomTextField
+                        required
+                        {...params}
+                        label='Motivo de Ausência'
+                        error={!!errors.reason}
+                        helperText={errors.reason?.message}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Controller
+                name='comment'
+                control={control}
+                render={({ field }) => (
                   <CustomTextField
-                    label='Descrição dos Motivos de Ausência:'
+                    label='Observação'
                     required
                     multiline
                     minRows={5}
                     fullWidth
-                    error={!!errors.reason}
-                    placeholder={errors.reason?.message}
+                    error={!!errors.comment}
+                    placeholder={errors.comment?.message}
                     {...field}
                   />
                 )}

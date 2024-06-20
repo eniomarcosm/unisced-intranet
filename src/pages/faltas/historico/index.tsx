@@ -4,7 +4,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import CustomChip from 'src/@core/components/mui/chip'
 import { AbsenceRequestData } from 'src/types/pages/generalData'
 import { firestore } from 'src/configs/firebaseConfig'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import toast from 'react-hot-toast'
 import { vacation_status } from 'src/constants/vacation'
 import IconifyIcon from 'src/@core/components/icon'
@@ -15,7 +15,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import Link from 'next/link'
 
-export default function HistoricoFaltas() {
+export default function HistoricoFaltas({}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const [absenceRequest, setAbsenceRequest] = useState<AbsenceRequestData[]>([])
@@ -28,7 +28,11 @@ export default function HistoricoFaltas() {
       try {
         const absenceRequestArray: AbsenceRequestData[] = []
         const querySnapshot = await getDocs(
-          query(collection(firestore, 'absence_justification'), where('staffId', '==', user!.staffId))
+          query(
+            collection(firestore, 'absence_justification'),
+            where('staffId', '==', user!.staffId),
+            orderBy('request_date', 'desc')
+          )
         )
         querySnapshot.forEach(doc => {
           absenceRequestArray.push(doc.data() as AbsenceRequestData)
@@ -70,6 +74,30 @@ export default function HistoricoFaltas() {
 
   const columns: GridColDef[] = [
     {
+      flex: 0.2,
+      minWidth: 100,
+      field: 'id',
+      headerName: 'Acções',
+      renderCell: (params: GridRenderCellParams) => (
+        <>
+          <IconButton color='info' LinkComponent={Link} href={`/faltas/historico/${params.row.id}`}>
+            <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
+          </IconButton>
+        </>
+      )
+    },
+    {
+      flex: 0.3,
+      minWidth: 120,
+      field: 'request_date',
+      headerName: 'Data de Solicitação',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant='body2' sx={{ color: 'text.primary' }}>
+          {params.row?.request_date?.toDate().toLocaleDateString('pt-BR')}
+        </Typography>
+      )
+    },
+    {
       flex: 0.3,
       minWidth: 120,
       field: 'start_date',
@@ -103,17 +131,7 @@ export default function HistoricoFaltas() {
     //     </Typography>
     //   )
     // },
-    {
-      flex: 0.3,
-      minWidth: 120,
-      field: 'request_date',
-      headerName: 'Data de Solicitação',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.request_date?.toDate().toLocaleDateString('pt-BR')}
-        </Typography>
-      )
-    },
+
     {
       flex: 0.2,
       minWidth: 100,
@@ -163,19 +181,6 @@ export default function HistoricoFaltas() {
             <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
           )}
         </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'id',
-      headerName: 'Acções',
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          <IconButton color='info' LinkComponent={Link} href={`/faltas/historico/${params.row.id}`}>
-            <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
-          </IconButton>
-        </>
       )
     }
   ]

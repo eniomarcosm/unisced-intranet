@@ -16,8 +16,6 @@ import { ChangeEvent, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import DatePicker from 'react-datepicker'
-import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
 import { genders, idTypes } from 'src/constants/user'
@@ -31,7 +29,12 @@ import { useRouter } from 'next/router'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import { DepartmentData } from 'src/types/pages/generalData'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
+import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
 
+import DatePicker, { registerLocale } from 'react-datepicker'
+import ptBR from 'date-fns/locale/pt-BR' // the locale you want
+
+registerLocale('ptBR', ptBR) // register it with the name you want
 export default function CreateStaff({}) {
   const [departaments, setDepartaments] = useState<DepartmentData[]>([])
   const [selectedStaff, setSelectedStaff] = useState<UserStaffData>()
@@ -353,6 +356,7 @@ export default function CreateStaff({}) {
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <DatePicker
+                      locale='ptBR'
                       selected={value}
                       showYearDropdown
                       showMonthDropdown
@@ -537,6 +541,7 @@ export default function CreateStaff({}) {
                   rules={{ required: true }}
                   render={({ field: { value, onChange } }) => (
                     <DatePicker
+                      locale='ptBR'
                       selected={value}
                       showYearDropdown
                       showMonthDropdown

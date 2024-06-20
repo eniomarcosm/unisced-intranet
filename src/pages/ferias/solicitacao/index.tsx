@@ -5,7 +5,7 @@ import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomTextField from 'src/@core/components/mui/text-field'
 import { firestore } from 'src/configs/firebaseConfig'
-import { collection, deleteDoc, doc, getDoc, getDocs, query } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore'
 import toast from 'react-hot-toast'
 import { DepartmentData } from 'src/pages/configurar/departamento'
 import { UserStaffData } from 'src/pages/colaborador/cadastrar'
@@ -158,7 +158,9 @@ export default function SolicitacaoFerias({}) {
     const getData = async () => {
       try {
         const vacationRequestArray: VacationRequestData[] = []
-        const querySnapshot = await getDocs(query(collection(firestore, 'vacation_request')))
+        const querySnapshot = await getDocs(
+          query(collection(firestore, 'vacation_request'), orderBy('request_date', 'desc'))
+        )
         querySnapshot.forEach(doc => {
           vacationRequestArray.push(doc.data() as VacationRequestData)
         })
@@ -174,16 +176,16 @@ export default function SolicitacaoFerias({}) {
 
   const years = [...new Set(vacationRequest.map(request => new Date(request.start_date?.toDate()).getFullYear()))]
 
-  const filterVacationResquests = vacationRequest.filter(vRequest =>
-    staff.some(
-      stf =>
-        stf.department === departmentId &&
-        stf.id === vRequest.staffId &&
-        year === new Date(vRequest?.start_date?.toDate()).getFullYear()
-    )
-  )
-
   const filterDepartmentos = departments.filter(dpt => dpt.organic_unit === organic_unit)
+
+  const filterVacationResquests = vacationRequest.filter(vRequest => {
+    const requestYear = new Date(vRequest.start_date?.toDate()).getFullYear()
+
+    return (
+      (departmentId ? staff.some(stf => stf.department === departmentId && stf.id === vRequest.staffId) : true) &&
+      (year ? year === requestYear : true)
+    )
+  })
 
   const getStatusCount = (index: number) => {
     let count = 0

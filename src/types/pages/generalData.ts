@@ -60,6 +60,9 @@ export interface AbsenceRequestData {
   human_resources: {
     comment: string
     updated_at: Timestamp
+    sactions: string
+    reason: string
+    day_vacations: number
     is_approved: number
     name: string
   }

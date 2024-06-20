@@ -100,6 +100,7 @@ export default function ViewVacationRequest({}) {
   return (
     <Fragment>
       <ModalProgressBar open={isLoading} />
+
       <Card sx={{ mt: 5 }}>
         <CardHeader title='Detalhes da Solicitação' />
         <Divider />
@@ -128,7 +129,7 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Data de Início'
+                label='Data de Ausência'
                 value={absenceRequest?.start_date?.toDate().toLocaleDateString('pt-BR')}
               />
             </Grid>
@@ -136,7 +137,7 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Data de Término'
+                label='Ao Dia'
                 value={absenceRequest?.end_date?.toDate().toLocaleDateString('pt-BR')}
               />
             </Grid>
@@ -157,7 +158,7 @@ export default function ViewVacationRequest({}) {
                 minRows={2}
                 fullWidth
                 disabled
-                label='Parecer do Superior'
+                label='Observação do Superior'
                 value={absenceRequest?.superior?.comment}
               />
             </Grid>
@@ -167,7 +168,7 @@ export default function ViewVacationRequest({}) {
                 minRows={2}
                 fullWidth
                 disabled
-                label='Parecer dos Recursos Humanos'
+                label='Observação dos Recursos Humanos'
                 value={absenceRequest?.human_resources?.comment}
               />
             </Grid>
@@ -177,7 +178,7 @@ export default function ViewVacationRequest({}) {
                 minRows={2}
                 fullWidth
                 disabled
-                label='Parecer da Direcção'
+                label='Observação da Direcção'
                 value={absenceRequest?.director?.comment}
               />
             </Grid>
@@ -213,8 +214,14 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Estado do Superior'
-                value={absenceRequest?.superior?.is_approved}
+                label='Parecer do Superior'
+                value={
+                  absenceRequest?.superior?.is_approved === 1
+                    ? 'Aprovado'
+                    : absenceRequest?.superior?.is_approved === 2
+                    ? 'Reprovado'
+                    : undefined
+                }
               />
             </Grid>
 
@@ -222,8 +229,14 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Estado dos Recursos Humanos'
-                value={absenceRequest?.human_resources?.is_approved}
+                label='Parecer dos Recursos Humanos'
+                value={
+                  absenceRequest?.human_resources?.is_approved === 1
+                    ? 'Aprovado'
+                    : absenceRequest?.human_resources?.is_approved === 2
+                    ? 'Reprovado'
+                    : undefined
+                }
               />
             </Grid>
 
@@ -231,12 +244,18 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Estado da Direcção'
-                value={absenceRequest?.director?.is_approved}
+                label='Parecer da Direcção'
+                value={
+                  absenceRequest?.director?.is_approved === 1
+                    ? 'Aprovado'
+                    : absenceRequest?.director?.is_approved === 2
+                    ? 'Reprovado'
+                    : undefined
+                }
               />
             </Grid>
             <Grid item xs={12} sm={3}>
-              <Button type='reset' color='warning' variant='outlined' LinkComponent={Link} href='/faltas/histórico'>
+              <Button type='reset' color='warning' variant='outlined' LinkComponent={Link} href='/faltas/historico'>
                 Voltar
               </Button>
             </Grid>

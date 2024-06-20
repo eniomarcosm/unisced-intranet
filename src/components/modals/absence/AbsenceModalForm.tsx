@@ -26,7 +26,9 @@ import toast from 'react-hot-toast'
 const vacationDateSchema = z.object({
   comment: z.string(),
   is_approved: z.number(),
-  sactions: z.string().array()
+  sactions: z.string().array(),
+  reason: z.string(),
+  day_vacations: z.number().min(0, 'O valor não pode ser menor que zero!').default(0)
 })
 
 type VacationDate = z.infer<typeof vacationDateSchema>
@@ -40,10 +42,12 @@ type DateModalFormProps = {
 
 const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSubmit }) => {
   const [penalizacoes, setPenalizacoes] = useState<SelectiveData[]>([])
+  const [motivos, setMotivos] = useState<SelectiveData[]>([])
 
   const {
     control,
     getValues,
+    register,
     handleSubmit,
     formState: { errors, isValid }
   } = useForm<VacationDate>({
@@ -60,6 +64,23 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
           penalizationsArray.push(doc.data() as SelectiveData)
         })
         setPenalizacoes(penalizationsArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const reasonsArray: SelectiveData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'absence_reasons'))
+
+        querySnapshot.forEach(doc => {
+          reasonsArray.push(doc.data() as SelectiveData)
+        })
+        setMotivos(reasonsArray)
       } catch (error) {
         toast.error('Erro ao solicitar dados!')
         console.log(error)
@@ -93,7 +114,7 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
                   control={control}
                   render={({ field }) => (
                     <CustomTextField
-                      label='Estado'
+                      label='Parecer'
                       fullWidth
                       required
                       defaultValue={0}
@@ -120,6 +141,7 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
                       fullWidth
                       multiple
                       options={penalizacoes}
+                      value={penalizacoes.filter(option => field?.value?.includes(option.id)) || []}
                       getOptionLabel={option => `${option.name}`}
                       onChange={(_, selectedOptions) => {
                         field.onChange(selectedOptions ? selectedOptions.map(option => option.id) : [])
@@ -127,13 +149,52 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
                       renderInput={params => (
                         <CustomTextField
                           {...params}
-                          label='Penalizações Consequêntes'
+                          label='Penalizações Consequentes'
                           error={!!errors.sactions}
                           helperText={errors.sactions?.message}
                         />
                       )}
                     />
                   )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12}>
+                <Controller
+                  name='reason'
+                  control={control}
+                  render={({ field }) => (
+                    <CustomAutocomplete
+                      fullWidth
+                      options={motivos}
+                      value={motivos?.find(option => option.id === field.value) || null}
+                      getOptionLabel={option => `${option.name}`}
+                      onChange={(_, selectedOptions) => {
+                        field.onChange(selectedOptions ? selectedOptions.id : '')
+                      }}
+                      renderInput={params => (
+                        <CustomTextField
+                          {...params}
+                          label='Motivo de Ausência'
+                          error={!!errors.reason}
+                          helperText={errors.reason?.message}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12}>
+                <CustomTextField
+                  label='Número de dias por descontar'
+                  required
+                  defaultValue={0}
+                  type='number'
+                  fullWidth
+                  error={!!errors.day_vacations}
+                  placeholder={errors.day_vacations?.message}
+                  {...register('day_vacations', { valueAsNumber: true })}
                 />
               </Grid>
 

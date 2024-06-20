@@ -21,6 +21,12 @@ import themeOptions from './ThemeOptions'
 // ** Global Styles
 import GlobalStyling from './globalStyles'
 
+// ** keynote: Idiomas dos Datagrid e Datapicker
+
+import { ptBR as dataGridPTbr } from '@mui/x-data-grid'
+import { ptBR as corePTbr } from '@mui/material/locale'
+import { ptBR } from '@mui/x-date-pickers/locales'
+
 interface Props {
   settings: Settings
   children: ReactNode
@@ -31,7 +37,7 @@ const ThemeComponent = (props: Props) => {
   const { settings, children } = props
 
   // ** Pass merged ThemeOptions (of core and user) to createTheme function
-  let theme = createTheme(themeOptions(settings, 'light'))
+  let theme = createTheme(themeOptions(settings, 'light'), ptBR, dataGridPTbr, corePTbr)
 
   // ** Set responsive font sizes to true
   if (themeConfig.responsiveFontSizes) {

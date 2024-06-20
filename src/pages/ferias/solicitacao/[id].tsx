@@ -428,7 +428,7 @@ export default function ViewVacationRequest({}) {
                 minRows={2}
                 fullWidth
                 disabled
-                label='Parecer do Superior'
+                label='Observação do Superior'
                 value={currentVacationRequest?.superior?.comment}
               />
             </Grid>
@@ -438,7 +438,7 @@ export default function ViewVacationRequest({}) {
                 minRows={2}
                 fullWidth
                 disabled
-                label='Parecer dos Recursos Humanos'
+                label='Observação dos Recursos Humanos'
                 value={currentVacationRequest?.human_resources?.comment}
               />
             </Grid>
@@ -448,7 +448,7 @@ export default function ViewVacationRequest({}) {
                 minRows={2}
                 fullWidth
                 disabled
-                label='Parecer da Direcção'
+                label='Observação da Direcção'
                 value={currentVacationRequest?.director?.comment}
               />
             </Grid>
@@ -484,7 +484,7 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Estado do Superior'
+                label='Parecer do Superior'
                 value={
                   currentVacationRequest?.superior?.is_approved === 1
                     ? 'Aprovado'
@@ -498,7 +498,7 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Estado dos Recursos Humanos'
+                label='Parecer dos Recursos Humanos'
                 value={
                   currentVacationRequest?.human_resources?.is_approved === 1
                     ? 'Aprovado'
@@ -512,7 +512,7 @@ export default function ViewVacationRequest({}) {
               <CustomTextField
                 fullWidth
                 disabled
-                label='Estado da Direcção'
+                label='Parecer da Direcção'
                 value={
                   currentVacationRequest?.director?.is_approved === 1
                     ? 'Aprovado'

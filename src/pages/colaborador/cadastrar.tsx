@@ -17,7 +17,6 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-import DatePicker from 'react-datepicker'
 import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
@@ -33,6 +32,11 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { DepartmentData } from 'src/types/pages/generalData'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
+
+import DatePicker, { registerLocale } from 'react-datepicker'
+import ptBR from 'date-fns/locale/pt-BR' // the locale you want
+
+registerLocale('ptBR', ptBR) // register it with the name you want
 
 // import DialogTransition from 'src/components/dialogs/DialogTransition'
 
@@ -450,6 +454,7 @@ export default function CreateStaff({}) {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <DatePicker
+                    locale='ptBR'
                     selected={value}
                     showYearDropdown
                     showMonthDropdown
@@ -623,6 +628,7 @@ export default function CreateStaff({}) {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <DatePicker
+                    locale='ptBR'
                     selected={value}
                     showYearDropdown
                     showMonthDropdown

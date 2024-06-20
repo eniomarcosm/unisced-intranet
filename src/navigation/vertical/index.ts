@@ -90,7 +90,7 @@ const navigation = (): VerticalNavItemsType => {
       ]
     },
     {
-      title: 'Faltas',
+      title: 'Faltas e Dispensas',
       icon: 'tabler:history-toggle',
       children: [
         {

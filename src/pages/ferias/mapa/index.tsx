@@ -2,6 +2,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Chip,
   Divider,
   Grid,
   Tooltip,
@@ -68,6 +69,19 @@ const isApprovedAndInMonth = (vrequest: VacationRequestData, month: number) => {
   const isApproved = vrequest?.director?.is_approved === 1
 
   return isInMonth && isApproved
+}
+
+const isNotApprovedInMonth = (vrequest: VacationRequestData, month: number) => {
+  const startMonth =
+    vrequest?.start_date instanceof Date ? vrequest?.start_date.getMonth() : vrequest?.start_date?.toDate?.().getMonth()
+  const endMonth =
+    vrequest?.end_date instanceof Date ? vrequest?.end_date.getMonth() : vrequest.end_date?.toDate?.().getMonth()
+
+  const isInMonth = startMonth === month || endMonth === month
+
+  // const isApproved = vrequest?.ch?.is_approved === 0
+
+  return isInMonth
 }
 
 export default function VacationMap({}) {
@@ -262,7 +276,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 0)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -294,7 +324,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 1)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -326,7 +372,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 2)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -358,7 +420,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 3)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -390,7 +468,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 4)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -422,7 +516,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 5)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -454,7 +564,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 6)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -486,7 +612,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 7)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -518,7 +660,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 8)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -550,7 +708,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 9)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -582,7 +756,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 10)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -614,7 +804,23 @@ export default function VacationMap({}) {
                   >
                     <Box
                       sx={{
-                        bgcolor: '#cd4646',
+                        bgcolor: '#28c76f',
+                        width: 50,
+                        height: 50
+                      }}
+                    ></Box>
+                  </CustomWidthTooltip>
+                )
+              } else if (isNotApprovedInMonth(vrequest, 11)) {
+                return (
+                  <CustomWidthTooltip
+                    key={index}
+                    title={`Início: ${vrequest.start_date?.toDate().toLocaleDateString('pt-BR')}
+                      Término: ${vrequest.end_date?.toDate().toLocaleDateString('pt-BR')}`}
+                  >
+                    <Box
+                      sx={{
+                        bgcolor: '#ff9f43',
                         width: 50,
                         height: 50
                       }}
@@ -689,6 +895,17 @@ export default function VacationMap({}) {
                 setValue('year', selectedOption || 0)
               }}
             />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Box sx={{ display: 'inline-flex', paddingInline: 2, marginInline: 2 }}>
+              <Typography sx={{ paddingRight: 2, fontWeight: 'bold' }}>Legenda:</Typography>
+              <Box sx={{ paddingRight: 2 }}>
+                <Chip label='Confirmada' color='success' />
+              </Box>
+              <Box>
+                <Chip label='Solicitada' color='warning' />
+              </Box>
+            </Box>
           </Grid>
         </Grid>
       </CardContent>

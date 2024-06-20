@@ -4,7 +4,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import CustomChip from 'src/@core/components/mui/chip'
 import { DepartmentData, SelectiveData, AbsenceRequestData } from 'src/types/pages/generalData'
 import { firestore } from 'src/configs/firebaseConfig'
-import { collection, deleteDoc, doc, getDoc, getDocs, query } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore'
 import toast from 'react-hot-toast'
 import { vacation_status } from 'src/constants/vacation'
 import IconifyIcon from 'src/@core/components/icon'
@@ -44,7 +44,7 @@ const renderClient = (row: UserStaffData) => {
   }
 }
 
-export default function SolicitacaoFaltas() {
+export default function SolicitacaoFaltas({}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [staff, setStaff] = useState<UserStaffData[]>([])
   const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
@@ -133,7 +133,9 @@ export default function SolicitacaoFaltas() {
       setIsLoading(true)
       try {
         const absenceRequestArray: AbsenceRequestData[] = []
-        const querySnapshot = await getDocs(query(collection(firestore, 'absence_justification')))
+        const querySnapshot = await getDocs(
+          query(collection(firestore, 'absence_justification'), orderBy('request_date', 'desc'))
+        )
         querySnapshot.forEach(doc => {
           absenceRequestArray.push(doc.data() as AbsenceRequestData)
         })
@@ -167,14 +169,23 @@ export default function SolicitacaoFaltas() {
 
   const years = [...new Set(absenceRequest.map(request => new Date(request.request_date?.toDate()).getFullYear()))]
 
-  const filterAbsenceRequests = absenceRequest.filter(aRequest =>
-    staff.some(
-      stf =>
-        stf.department === departmentId &&
-        stf.id === aRequest.staffId &&
-        year === new Date(aRequest?.start_date?.toDate()).getFullYear()
+  // const filterAbsenceRequests = absenceRequest.filter(aRequest =>
+  //   staff.some(
+  //     stf =>
+  //       stf.department === departmentId &&
+  //       stf.id === aRequest.staffId &&
+  //       year === new Date(aRequest?.start_date?.toDate()).getFullYear()
+  //   )
+  // )
+
+  const filterAbsenceRequests = absenceRequest.filter(aRequest => {
+    const requestYear = new Date(aRequest.start_date?.toDate()).getFullYear()
+
+    return (
+      (departmentId ? staff.some(stf => stf.department === departmentId && stf.id === aRequest.staffId) : true) &&
+      (year ? year === requestYear : true)
     )
-  )
+  })
 
   const filterDepartmentos = departments.filter(dpt => dpt.organic_unit === organic_unit)
 

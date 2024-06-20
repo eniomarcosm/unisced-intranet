@@ -226,7 +226,7 @@ export default function VacationAproval({}) {
       flex: 0.2,
       minWidth: 100,
       field: 'is_approved',
-      headerName: 'Estado',
+      headerName: 'Parecer',
       editable: editEnable,
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
