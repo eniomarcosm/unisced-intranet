@@ -24,6 +24,7 @@ export default function JustifacaoFaltas({}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [cargos, setCargos] = useState<SelectiveData[]>([])
   const [departments, setDepartaments] = useState<DepartmentData[]>([])
+  const [motivos, setMotivos] = useState<SelectiveData[]>([])
 
   const router = useRouter()
   const { id } = router.query
@@ -52,6 +53,24 @@ export default function JustifacaoFaltas({}) {
     getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const reasonsArray: SelectiveData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'absence_reasons'))
+
+        querySnapshot.forEach(doc => {
+          reasonsArray.push(doc.data() as SelectiveData)
+        })
+        setMotivos(reasonsArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
 
   useEffect(() => {
     const getData = async () => {
@@ -244,10 +263,15 @@ export default function JustifacaoFaltas({}) {
   // }
 
   const componentRef = useRef<HTMLDivElement>(null)
+  const attachmentRef = useRef<HTMLDivElement>(null)
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    documentTitle: 'Relatório-Faltas'
+    documentTitle: `Relatório-Faltas-${currentStaf?.name}`
+  })
+  const handlePrintAttachment = useReactToPrint({
+    content: () => attachmentRef.current,
+    documentTitle: `Comprovativo-${currentStaf?.name}`
   })
 
   const data: PrintDataProps = {
@@ -255,7 +279,12 @@ export default function JustifacaoFaltas({}) {
     department: departments?.find(dpt => dpt.id === currentStaf?.department)?.name,
     staff_code: currentStaf?.staff_code,
     request_date: absenceRequest?.request_date?.toDate().toLocaleDateString('pt-BR'),
-    reason: absenceRequest?.reason,
+    reason: motivos.find(motivo => motivo.id === absenceRequest?.reason)?.name,
+    return_time: absenceRequest?.return_time.toDate().toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }),
     start_date: absenceRequest?.start_date?.toDate().toLocaleDateString('pt-BR'),
     end_date: absenceRequest?.end_date?.toDate().toLocaleDateString('pt-BR'),
     superior: absenceRequest?.superior,
@@ -304,6 +333,7 @@ export default function JustifacaoFaltas({}) {
                   value={`${currentStaf?.name} ${currentStaf?.surname}`}
                 />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField
                   fullWidth
@@ -312,15 +342,19 @@ export default function JustifacaoFaltas({}) {
                   value={cargos.find(cargo => cargo.id === currentStaf?.job_position)?.name}
                 />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField fullWidth disabled label='Códico do Trabalhador' value={currentStaf?.staff_code} />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField fullWidth disabled label='Contacto' value={currentStaf?.contact1} />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField fullWidth disabled label='Contacto Alternativo' value={`${currentStaf?.contact2}`} />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField
                   fullWidth
@@ -329,18 +363,28 @@ export default function JustifacaoFaltas({}) {
                   value={`${currentStaf?.admited_at?.toDate().toLocaleDateString('pt-BR')}`}
                 />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField fullWidth disabled label='Email' value={`${currentStaf?.personal_email}`} />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField fullWidth disabled label='Sexo' value={`${currentStaf?.gender}`} />
               </Grid>
+
               <Grid item xs={12} sm={4}>
-                <CustomTextField fullWidth disabled value='' label='Assinatura' />
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  value={departments.find(dpt => dpt.id === currentStaf?.department)?.name}
+                  label='Nuit'
+                />
               </Grid>
+
               <Grid item xs={12} sm={12}>
                 <Divider>Resposta da Solicitação</Divider>
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField
                   fullWidth
@@ -349,6 +393,7 @@ export default function JustifacaoFaltas({}) {
                   value={absenceRequest?.start_date?.toDate().toLocaleDateString('pt-BR')}
                 />
               </Grid>
+
               <Grid item xs={12} sm={4}>
                 <CustomTextField
                   fullWidth
@@ -357,18 +402,60 @@ export default function JustifacaoFaltas({}) {
                   value={absenceRequest?.end_date?.toDate().toLocaleDateString('pt-BR')}
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Número de Dias Solicitados' value={absenceRequest?.days} />
-            </Grid> */}
 
-              {/* <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Número de Dias Restantes'
-                value={absenceRequest?.days}
-              />
-            </Grid> */}
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Hora de Regresso'
+                  value={absenceRequest?.return_time.toDate().toLocaleTimeString('pt-BR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                  })}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={8}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Motivo'
+                  value={motivos.find(motivo => motivo.id === absenceRequest?.reason)?.name}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Button
+                  sx={{ mt: 5 }}
+                  variant='contained'
+                  onClick={handlePrintAttachment}
+                  color='primary'
+                  disabled={!absenceRequest?.evidenceURL}
+                  startIcon={<IconifyIcon icon={'tabler:printer'} />}
+                >
+                  Comprovativo
+                </Button>
+              </Grid>
+              <div style={{ display: 'none' }}>
+                <div ref={attachmentRef}>
+                  <img
+                    src={absenceRequest?.evidenceURL}
+                    alt='File Viewer'
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                  />
+                </div>
+              </div>
+
+              <Grid item xs={12} sm={12}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Observação'
+                  multiline
+                  rows={2}
+                  value={absenceRequest?.comment}
+                />
+              </Grid>
 
               <Grid item xs={12} sm={12}>
                 <Divider>Detalhes da Solicitação</Divider>

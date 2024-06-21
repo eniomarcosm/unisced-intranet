@@ -26,6 +26,7 @@ export interface VacationRequestData {
   end_date: Timestamp
   days: number
   reason: string
+  comment: string
   human_resources: {
     comment: string
     updated_at: Timestamp
@@ -52,7 +53,9 @@ export interface AbsenceRequestData {
   notify: boolean
   request_date: Timestamp
   staffId: string
-  evidenceUrl: string
+  comment: string
+  return_time: Timestamp
+  evidenceURL: string
   start_date: Timestamp
   days: number
   end_date: Timestamp
@@ -86,6 +89,7 @@ export interface PrintDataProps {
   department?: string
   staff_code?: string
   request_date?: string
+  return_time?: string
   reason?: string
   job_position?: string
   start_date?: string

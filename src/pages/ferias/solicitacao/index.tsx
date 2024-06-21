@@ -253,7 +253,7 @@ export default function SolicitacaoFerias({}) {
               <Typography
                 noWrap
                 component={Link}
-                href={`colaborador/${id}`}
+                href={`solicitacao/${id}`}
                 sx={{
                   fontWeight: 500,
                   textDecoration: 'none',

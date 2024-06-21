@@ -80,7 +80,7 @@ export default function MyVacation({}) {
       headerName: 'Acções',
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <IconButton LinkComponent={Link} href={`/ferias/historico/${params.row.id}`} color='success'>
+          <IconButton LinkComponent={Link} href={`historico/${params.row.id}`} color='success'>
             <IconifyIcon fontSize='1.5rem' icon='tabler:eye' />
           </IconButton>
         </>

@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
-import { collection, doc, getDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -11,12 +11,16 @@ import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { firestore } from 'src/configs/firebaseConfig'
 import { AbsenceForm } from 'src/documents/form-absence'
 import { UserStaffData } from 'src/pages/colaborador/cadastrar'
-import { AbsenceRequestData } from 'src/types/pages/generalData'
+import { DepartmentData } from 'src/pages/configurar/departamento'
+import { AbsenceRequestData, PrintDataProps, SelectiveData } from 'src/types/pages/generalData'
 
 export default function ViewVacationRequest({}) {
   const [absenceRequest, setAbsenceRequest] = useState<AbsenceRequestData>()
   const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [motivos, setMotivos] = useState<SelectiveData[]>([])
+  const [cargos, setCargos] = useState<SelectiveData[]>([])
+  const [departments, setDepartaments] = useState<DepartmentData[]>([])
 
   // const [cargos, setCargos] = useState<SelectiveData[]>([])
 
@@ -47,6 +51,59 @@ export default function ViewVacationRequest({}) {
     getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const reasonsArray: SelectiveData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'absence_reasons'))
+
+        querySnapshot.forEach(doc => {
+          reasonsArray.push(doc.data() as SelectiveData)
+        })
+        setMotivos(reasonsArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const dptArray: DepartmentData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'departments'))
+        querySnapshot.forEach(doc => {
+          dptArray.push(doc.data() as DepartmentData)
+        })
+        setDepartaments(dptArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const profCategoriesArray: SelectiveData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'job_position'))
+
+        querySnapshot.forEach(doc => {
+          profCategoriesArray.push(doc.data() as SelectiveData)
+        })
+        setCargos(profCategoriesArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
 
   // useEffect(() => {
   //   const getData = async () => {
@@ -91,11 +148,36 @@ export default function ViewVacationRequest({}) {
   }, [absenceRequest])
 
   const componentRef = useRef<HTMLDivElement>(null)
+  const attachmentRef = useRef<HTMLDivElement>(null)
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: 'Relatório-'
   })
+
+  const handlePrintAttachment = useReactToPrint({
+    content: () => attachmentRef.current,
+    documentTitle: 'Comprovativo-'
+  })
+
+  const data: PrintDataProps = {
+    name: `${currentStaf?.name} ${currentStaf?.surname}`,
+    department: departments?.find(dpt => dpt.id === currentStaf?.department)?.name,
+    staff_code: currentStaf?.staff_code,
+    request_date: absenceRequest?.request_date?.toDate().toLocaleDateString('pt-BR'),
+    reason: motivos.find(motivo => motivo.id === absenceRequest?.reason)?.name,
+    return_time: absenceRequest?.return_time.toDate().toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }),
+    start_date: absenceRequest?.start_date?.toDate().toLocaleDateString('pt-BR'),
+    end_date: absenceRequest?.end_date?.toDate().toLocaleDateString('pt-BR'),
+    superior: absenceRequest?.superior,
+    job_position: cargos?.find(cargo => cargo.id === currentStaf?.job_position)?.name,
+    human_resources: absenceRequest?.human_resources,
+    director: absenceRequest?.director
+  }
 
   return (
     <Fragment>
@@ -121,7 +203,7 @@ export default function ViewVacationRequest({}) {
               </Button>
               {currentStaf && (
                 <div style={{ display: 'none' }}>
-                  <AbsenceForm ref={componentRef} data={currentStaf} />
+                  <AbsenceForm ref={componentRef} data={data} />
                 </div>
               )}
             </Grid>
@@ -142,11 +224,57 @@ export default function ViewVacationRequest({}) {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <CustomTextField fullWidth disabled label='Número de Dias Solicitados' value={absenceRequest?.days} />
+              <CustomTextField
+                fullWidth
+                disabled
+                label='Hora de Regresso'
+                value={absenceRequest?.return_time.toDate().toLocaleTimeString('pt-BR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false
+                })}
+              />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <CustomTextField
+                fullWidth
+                disabled
+                label='Motivo'
+                value={motivos.find(motivo => motivo.id === absenceRequest?.reason)?.name}
+              />
             </Grid>
 
+            <Grid item xs={12} sm={4}>
+              <Button
+                sx={{ mt: 5 }}
+                variant='contained'
+                onClick={handlePrintAttachment}
+                color='primary'
+                disabled={!absenceRequest?.evidenceURL}
+                startIcon={<IconifyIcon icon={'tabler:printer'} />}
+              >
+                Comprovativo
+              </Button>
+            </Grid>
+            <div style={{ display: 'none' }}>
+              <div ref={attachmentRef}>
+                <img
+                  src={absenceRequest?.evidenceURL}
+                  alt='File Viewer'
+                  style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+              </div>
+            </div>
+
             <Grid item xs={12} sm={8}>
-              <CustomTextField fullWidth disabled label='Motivos' multiline rows={2} value={absenceRequest?.reason} />
+              <CustomTextField
+                fullWidth
+                disabled
+                label='Observação'
+                multiline
+                rows={2}
+                value={absenceRequest?.comment}
+              />
             </Grid>
 
             <Grid item xs={12} sm={12}>

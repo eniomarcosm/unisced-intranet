@@ -37,6 +37,7 @@ registerLocale('ptBR', ptBR) // register it with the name you want
 const absenceSchema = z.object({
   id: z.string().optional(),
   reason: z.string(),
+  return_time: z.date(),
   start_date: z.any(),
   end_date: z.any(),
   evidenceURL: z.any(),
@@ -198,6 +199,12 @@ export default function JustificarFalta({}) {
     }
   }
 
+  const defaultTime = new Date()
+  defaultTime.setHours(8)
+  defaultTime.setMinutes(0)
+  defaultTime.setSeconds(0)
+  defaultTime.setMilliseconds(0)
+
   return (
     <Card>
       <CardHeader title='Justificar Falta' />
@@ -214,7 +221,7 @@ export default function JustificarFalta({}) {
                   hidden
                   type='file'
                   value={inputValue}
-                  accept='image/png, image/jpeg, image/jpg, application/pdf'
+                  accept='image/png, image/jpeg, image/jpg'
                   onChange={handleInputImageChange}
                   id='account-settings-upload-image'
                 />
@@ -223,7 +230,7 @@ export default function JustificarFalta({}) {
                 Limpar
               </ResetButtonStyled>
               <Typography sx={{ mt: 4, color: 'text.disabled' }}>
-                Formatos permitidos PNG, JPG, JPEG e PDF. Tamanho Máximo de 8MB
+                Formatos permitidos PNG, JPG e JPEG. Tamanho Máximo de 8MB
               </Typography>
             </div>
           </Box>
@@ -238,8 +245,7 @@ export default function JustificarFalta({}) {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <DatePicker
-                  locale="ptBR"
-
+                    locale='ptBR'
                     selected={value}
                     showYearDropdown
                     showMonthDropdown
@@ -252,7 +258,7 @@ export default function JustificarFalta({}) {
                       <CustomInputPicker
                         value={value}
                         onChange={onChange}
-                        label='Data de Auséncia'
+                        label='Data de Auséncia:'
                         error={Boolean(errors.start_date)}
                         aria-describedby='data-realiazacao'
                         {...(errors.start_date && { helperText: 'Este campo é obrigatório' })}
@@ -278,8 +284,7 @@ export default function JustificarFalta({}) {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <DatePicker
-                  locale="ptBR"
-
+                    locale='ptBR'
                     selected={value}
                     showYearDropdown
                     showMonthDropdown
@@ -292,7 +297,7 @@ export default function JustificarFalta({}) {
                       <CustomInputPicker
                         value={value}
                         onChange={onChange}
-                        label='Ao Dia'
+                        label='Ao Dia:'
                         error={Boolean(errors.end_date)}
                         aria-describedby='data-realiazacao'
                         {...(errors.end_date && { helperText: 'Este campo é obrigatório' })}
@@ -329,7 +334,7 @@ export default function JustificarFalta({}) {
                       <CustomTextField
                         required
                         {...params}
-                        label='Motivo de Ausência'
+                        label='Motivo de Ausência:'
                         error={!!errors.reason}
                         helperText={errors.reason?.message}
                       />
@@ -338,13 +343,46 @@ export default function JustificarFalta({}) {
                 )}
               />
             </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <Controller
+                name='return_time'
+                control={control}
+                defaultValue={defaultTime}
+                render={({ field: { onChange, value } }) => (
+                  <DatePicker
+                    locale='ptBR'
+                    showTimeSelect
+                    selected={value}
+                    timeIntervals={15}
+                    showTimeSelectOnly
+                    dateFormat='HH:mm'
+                    timeFormat='HH:mm'
+                    id='time-only-picker'
+                    onChange={date => onChange(date)}
+                    customInput={
+                      <CustomTextField
+                        fullWidth
+                        label='Horas de Regresso:'
+                        value={
+                          value
+                            ? value.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', hour12: false })
+                            : ''
+                        }
+                      />
+                    }
+                  />
+                )}
+              />
+            </Grid>
+
             <Grid item xs={12} sm={12}>
               <Controller
                 name='comment'
                 control={control}
                 render={({ field }) => (
                   <CustomTextField
-                    label='Observação'
+                    label='Observação:'
                     required
                     multiline
                     minRows={5}

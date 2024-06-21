@@ -18,6 +18,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
     reason,
     start_date,
     end_date,
+    return_time,
     superior,
     human_resources,
     director
@@ -264,10 +265,9 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                           REGRESSO:
                           <span className='_ _1' />
                           <span className='ls1 ws1'>
-                            {' '}
-                            <span className='_ _6'> </span>
-                            <span className='ff4 lsf ws18'>HR</span>
+                            {return_time}
                             <span className='ff4'> </span>
+                            HR
                           </span>
                         </span>
                       </span>

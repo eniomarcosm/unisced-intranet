@@ -134,8 +134,9 @@ const navigation = (): VerticalNavItemsType => {
           subject: 'config-organic-unit',
           path: '/configurar/unidade-organica'
         },
-        { title: 'Departartamentos', action: 'read', subject: 'config-department', path: '/configurar/departamento' },
-        { title: 'Departartamentos', action: 'read', subject: 'acl-page', path: '/acl' }
+        { title: 'Departartamentos', action: 'read', subject: 'config-department', path: '/configurar/departamento' }
+
+        // { title: 'Departartamentos', action: 'read', subject: 'acl-page', path: '/acl' }
       ]
     }
   ]

@@ -64,6 +64,7 @@
     "next-auth": "^4.24.7",
     "nprogress": "0.2.0",
     "payment": "2.4.6",
+    "pdfjs-dist": "^4.3.136",
     "phantomjs-prebuilt": "^2.1.16",
     "prismjs": "1.29.0",
     "puppeteer": "^22.10.0",
