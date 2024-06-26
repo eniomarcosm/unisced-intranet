@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { FC, ReactNode } from 'react'
 
 // ** Next Imports
 import Head from 'next/head'
@@ -104,7 +104,7 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
 }
 
 // ** Configure JSS & ClassName
-const App = (props: ExtendedAppProps) => {
+const App: React.FC<ExtendedAppProps> = props => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // Variables
