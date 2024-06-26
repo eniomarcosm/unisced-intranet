@@ -104,7 +104,7 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
 }
 
 // ** Configure JSS & ClassName
-const App = (props) => {
+const App = (props: ExtendedAppProps) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // Variables
