@@ -31,10 +31,8 @@ import { DepartmentData } from 'src/types/pages/generalData'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
 
-import DatePicker, { registerLocale } from 'react-datepicker'
-import ptBR from 'date-fns/locale/pt-BR' // the locale you want
+import DatePicker from 'react-datepicker'
 
-registerLocale('ptBR', ptBR) // register it with the name you want
 export default function CreateStaff({}) {
   const [departaments, setDepartaments] = useState<DepartmentData[]>([])
   const [selectedStaff, setSelectedStaff] = useState<UserStaffData>()

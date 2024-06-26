@@ -39,10 +39,7 @@ import { AbsenceRequestData, VacationRequestData } from 'src/types/pages/general
 import { isWeekday } from 'src/pages/faltas/justificar'
 
 // ** keynote: Mudar idioma de datepicker
-import DatePicker, { registerLocale } from 'react-datepicker'
-import ptBR from 'date-fns/locale/pt-BR' // the locale you want
-
-registerLocale('ptBR', ptBR) // register it with the name you want
+import DatePicker from 'react-datepicker'
 
 // Function to check if a given date is a weekend (Saturday or Sunday)
 const isWeekend = (date: Date) => {

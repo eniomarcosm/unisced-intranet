@@ -296,6 +296,7 @@ const LoginPage = ({}) => {
                 <Button
                   fullWidth
                   color='info'
+                  disabled
                   variant='contained'
                   onClick={() => signIn('google', { callBackUrl: 'https://www.google.com' })}
                   sx={{ mb: 4, border: '4', bgcolor: '#4285f4' }}

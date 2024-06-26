@@ -33,10 +33,7 @@ import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { DepartmentData } from 'src/types/pages/generalData'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 
-import DatePicker, { registerLocale } from 'react-datepicker'
-import ptBR from 'date-fns/locale/pt-BR' // the locale you want
-
-registerLocale('ptBR', ptBR) // register it with the name you want
+import DatePicker from 'react-datepicker'
 
 // import DialogTransition from 'src/components/dialogs/DialogTransition'
 

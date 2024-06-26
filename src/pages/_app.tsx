@@ -59,6 +59,11 @@ import 'src/iconify-bundle/icons-bundle-react'
 // ** Global css styles
 import '../../styles/globals.css'
 
+import { registerLocale } from 'react-datepicker'
+import ptBR from 'date-fns/locale/pt-BR' // the locale you want
+
+registerLocale('ptBR', ptBR) // register it with the name you want
+
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
   Component: NextPage
@@ -99,7 +104,7 @@ const Guard = ({ children, authGuard, guestGuard }: GuardProps) => {
 }
 
 // ** Configure JSS & ClassName
-const App = (props: ExtendedAppProps) => {
+const App = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
   // Variables

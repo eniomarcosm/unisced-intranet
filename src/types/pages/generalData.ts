@@ -32,6 +32,7 @@ export interface VacationRequestData {
     updated_at: Timestamp
     is_approved: number
     name: string
+    sactions: string[]
   }
   superior: {
     comment: string
@@ -63,7 +64,7 @@ export interface AbsenceRequestData {
   human_resources: {
     comment: string
     updated_at: Timestamp
-    sactions: string
+    sactions: string[]
     reason: string
     day_vacations: number
     is_approved: number
@@ -95,10 +96,13 @@ export interface PrintDataProps {
   start_date?: string
   end_date?: string
   human_resources?: {
-    comment: string
-    updated_at: Timestamp
-    is_approved: number
-    name: string
+    comment?: string
+    updated_at?: Timestamp
+    is_approved?: number
+    name?: string
+    day_vacations?: number
+    reason?: string
+    sactions?: string[]
   }
   superior?: {
     comment: string

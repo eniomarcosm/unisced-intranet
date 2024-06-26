@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-head-element */
 
 import React from 'react'
+import penalizations from 'src/constants/penalizations'
 import { PrintDataProps, abbreviateName } from 'src/types/pages/generalData'
 
 interface AbsenceFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -23,6 +24,8 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
     human_resources,
     director
   } = data
+
+  const sactions = human_resources?.sactions || []
 
   return (
     <div ref={ref} {...rest}>
@@ -462,7 +465,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
-                    checked
+                    checked={sactions.includes(penalizations?.admoestacao_verbal)}
                   />
                   Admoestaçâo Verbal
                 </div>
@@ -478,6 +481,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={sactions.includes(penalizations?.repreensao_registada)}
                   />
                   Repreensâo
                   <span className='ls1 ws25'>
@@ -497,6 +501,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={sactions.includes(penalizations?.desconto_ferias)}
                   />
                   Desconto
                   <span className='ws28'> n</span>
@@ -516,6 +521,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={sactions.includes(penalizations?.desconto_salarial)}
                   />
                   Descontos
                   <span className='ws2a'> </span>
@@ -562,6 +568,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={sactions.includes(penalizations?.proceder_disciplinarmente)}
                   />
                   Proceder Disciplinarmente
                 </div>
@@ -577,6 +584,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={sactions.includes(penalizations?.arquivar)}
                   />
                   Arquivar
                 </div>
@@ -876,6 +884,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.is_approved === 1 ? true : false}
                   />
                   Faltas Justificadas
                 </div>
@@ -891,6 +900,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.is_approved === 2 ? true : false}
                   />
                   Faltas Injustificadas
                   <span className='ffd'> </span>
@@ -907,6 +917,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.reason === '1' ? true : false}
                   />
                   Faltas Por Doenças
                   <span className='ffd'> </span>
@@ -923,8 +934,9 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.reason === '2' ? true : false}
                   />
-                  Dias de Nojo
+                  Dias de Nojo/Falecimento
                 </div>
                 <div className='t m0 x2c hf y34 ff11 fs1 fc0 sc0 ls18 ws1'>
                   <input
@@ -953,6 +965,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.reason === '4' ? true : false}
                   />
                   Licença sem Venc.
                   <span className='ffc'> </span>
@@ -969,6 +982,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.reason === '5' ? true : false}
                   />
                   Desconto de Férias{' '}
                 </div>
@@ -984,6 +998,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.reason === '6' ? true : false}
                   />
                   Abandono de Lugar
                   <span className='ffc'> </span>
@@ -1000,6 +1015,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={human_resources?.reason === '7' ? true : false}
                   />
                   Outras Autorizadas
                 </div>
@@ -1036,7 +1052,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
-                    checked
+                    checked={director?.is_approved === 1 ? true : false}
                   />
                   Autorizo
                 </div>
@@ -1052,6 +1068,7 @@ export const AbsenceForm = React.forwardRef<HTMLDivElement, AbsenceFormProps>((p
                       transformOrigin: 'top left'
                     }}
                     type='checkbox'
+                    checked={director?.is_approved === 2 ? true : false}
                   />
                   N/Autorizo
                 </div>

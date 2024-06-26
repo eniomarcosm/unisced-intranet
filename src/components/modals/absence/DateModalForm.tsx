@@ -19,10 +19,7 @@ import IconifyIcon from 'src/@core/components/icon'
 import { Box } from '@mui/system'
 import { CustomInputPicker } from 'src/components/forms/DatePickerHelpers'
 
-import DatePicker, { registerLocale } from 'react-datepicker'
-import ptBR from 'date-fns/locale/pt-BR' // the locale you want
-
-registerLocale('ptBR', ptBR) // register it with the name you want
+import DatePicker from 'react-datepicker'
 
 // Define the Zod schema and types for form data
 const vacationDateSchema = z.object({

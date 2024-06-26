@@ -22,10 +22,7 @@ import { getCurrentYearRemainingVacationDays, vacationDays } from 'src/pages/fer
 import { UserStaffData } from 'src/pages/colaborador/cadastrar'
 import { AbsenceRequestData, VacationRequestData } from 'src/types/pages/generalData'
 
-import DatePicker, { registerLocale } from 'react-datepicker'
-import ptBR from 'date-fns/locale/pt-BR' // the locale you want
-
-registerLocale('ptBR', ptBR) // register it with the name you want
+import DatePicker from 'react-datepicker'
 
 // Define the Zod schema and types for form data
 const vacationDateSchema = z.object({

@@ -1,5 +1,6 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid } from '@mui/material'
 import { collection, doc, getDoc, getDocs, updateDoc } from 'firebase/firestore'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useRef, useState } from 'react'
@@ -436,12 +437,16 @@ export default function JustifacaoFaltas({}) {
                   Comprovativo
                 </Button>
               </Grid>
+
               <div style={{ display: 'none' }}>
-                <div ref={attachmentRef}>
-                  <img
-                    src={absenceRequest?.evidenceURL}
+                <div ref={attachmentRef} style={{ width: '210mm', height: '297mm', position: 'relative' }}>
+                  <Image
+                    src={absenceRequest?.evidenceURL ? absenceRequest!.evidenceURL : ''}
                     alt='File Viewer'
-                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    layout='fill' // Fill the parent container
+                    objectFit='contain'
+
+                    // style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   />
                 </div>
               </div>

@@ -896,27 +896,28 @@ export default function VacationMap({}) {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <Box sx={{ display: 'inline-flex', paddingInline: 2, marginInline: 2 }}>
-              <Typography sx={{ paddingRight: 2, fontWeight: 'bold' }}>Legenda:</Typography>
-              <Box sx={{ paddingRight: 2 }}>
-                <Chip label='Confirmada' color='success' />
-              </Box>
-              <Box>
-                <Chip label='Solicitada' color='warning' />
-              </Box>
-            </Box>
-          </Grid>
         </Grid>
       </CardContent>
       <CardContent>
         <Grid container spacing={5}>
-          <Grid item xs={12} sm={12}>
-            {year && (
+          <>
+            <Grid item xs={12} sm={12}>
+              <Box sx={{ display: 'inline-flex', paddingInline: 2, marginInline: 2 }}>
+                <Typography sx={{ paddingRight: 2, fontWeight: 'bold' }}>Legenda:</Typography>
+                <Box sx={{ paddingRight: 2 }}>
+                  <Chip label='Solicitada' color='warning' />
+                </Box>
+                <Box>
+                  <Chip label='Confirmada' color='success' />
+                </Box>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
               <DataGrid
                 autoHeight
                 pagination
-                rows={filterStaff}
+                rows={year !== 0 ? filterStaff : []}
                 disableDensitySelector
                 disableColumnFilter
                 columns={columns}
@@ -935,8 +936,8 @@ export default function VacationMap({}) {
                 }}
                 pageSizeOptions={[10, 25, 50]}
               />
-            )}
-          </Grid>
+            </Grid>
+          </>
         </Grid>
       </CardContent>
     </Card>
