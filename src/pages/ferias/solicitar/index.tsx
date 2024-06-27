@@ -168,9 +168,10 @@ export default function VacationRequestForm({}) {
         })
 
         const findStaff = staffArray.find(staff => staff.id === user!.staffId)
-
         setCurrentStaff(findStaff)
-        setSupervisorStaff(staffArray)
+
+        const myDepartmentStaff = staffArray.filter(staff => staff.department === findStaff?.department)
+        setSupervisorStaff(myDepartmentStaff)
       } catch (error) {
         toast.error('Erro ao solicitar dados!')
         console.log(error)
