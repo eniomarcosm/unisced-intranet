@@ -14,7 +14,7 @@ import VacationDateModalForm from 'src/components/modals/vacation/VacationDateMo
 import { firestore } from 'src/configs/firebaseConfig'
 import { AbsenceForm } from 'src/documents/form-absence'
 import { useAuth } from 'src/hooks/useAuth'
-import { UserStaffData } from 'src/pages/colaborador/cadastrar'
+import { UserStaffData } from 'src/pages/sca/colaborador/cadastrar'
 import {
   AbsenceRequestData,
   DepartmentData,

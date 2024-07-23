@@ -5,7 +5,7 @@ const navigation = (): VerticalNavItemsType => {
   return [
     {
       title: 'Início',
-      path: '/home',
+      path: '/sca/home',
       icon: 'tabler:smart-home',
       action: 'read',
       subject: 'home'
@@ -17,7 +17,7 @@ const navigation = (): VerticalNavItemsType => {
     },
     {
       title: 'Usuários',
-      path: '/usuarios',
+      path: '/sca/usuarios',
       icon: 'tabler:user',
       action: 'create',
       subject: 'users'
@@ -28,13 +28,13 @@ const navigation = (): VerticalNavItemsType => {
       children: [
         {
           title: 'Listar',
-          path: '/colaborador',
+          path: '/sca/colaborador',
           action: 'read',
           subject: 'staff'
         },
         {
           title: 'Cadastrar',
-          path: '/colaborador/cadastrar',
+          path: '/sca/colaborador/cadastrar',
           action: 'create',
           subject: 'staff-add'
         }
@@ -50,40 +50,46 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'tabler:clock-exclamation',
       children: [
         {
+          title: 'Marcação de Férias',
+          path: '/sca/ferias/marcar',
+          action: 'create',
+          subject: 'vacation-marcation'
+        },
+        {
           title: 'Solicitar Férias',
-          path: '/ferias/solicitar',
+          path: '/sca/ferias/solicitar',
           action: 'create',
           subject: 'vacation-request'
         },
         {
           title: 'Histórico de Férias',
-          path: '/ferias/historico',
+          path: '/sca/ferias/historico',
           action: 'read',
           subject: 'vacations-history'
         },
 
         // {
         //   title: 'Calendario de Férias',
-        //   path: '/ferias/calendario',
+        //   path: '/sca/ferias/calendario',
         //   action: 'read',
         //   subject: 'vacation-calendar'
         // },
         {
           title: 'Mapa de Férias',
-          path: '/ferias/mapa',
+          path: '/sca/ferias/mapa',
           action: 'read',
           subject: 'vacation-map'
         },
         {
           title: 'Solicitações de Férias',
-          path: '/ferias/solicitacao',
+          path: '/sca/ferias/solicitacao',
           action: 'create',
           subject: 'vacation-response'
         }
 
         // {
         //   title: 'Solicitações de Férias',
-        //   path: '/ferias/solicitacao',
+        //   path: '/sca/ferias/solicitacao',
         //   action: 'create',
         //   subject: 'vacation-response'
         // }
@@ -95,25 +101,25 @@ const navigation = (): VerticalNavItemsType => {
       children: [
         {
           title: 'Justificar',
-          path: '/faltas/justificar',
+          path: '/sca/faltas/justificar',
           action: 'create',
           subject: 'absence-request'
         },
         {
           title: 'Histórico',
-          path: '/faltas/historico',
+          path: '/sca/faltas/historico',
           action: 'manage',
           subject: 'absence-history'
         },
         {
           title: 'Solicitação',
-          path: '/faltas/solicitacao',
+          path: '/sca/faltas/solicitacao',
           action: 'create',
           subject: 'absence-response'
         },
         {
           title: 'Configurações',
-          path: '/faltas/configurações',
+          path: '/sca/faltas/configurações',
           action: 'create',
           subject: 'absence-config'
         }
@@ -132,11 +138,22 @@ const navigation = (): VerticalNavItemsType => {
           title: 'Unidade Orgânicas',
           action: 'read',
           subject: 'config-organic-unit',
-          path: '/configurar/unidade-organica'
+          path: '/sca/configurar/unidade-organica'
         },
-        { title: 'Departartamentos', action: 'read', subject: 'config-department', path: '/configurar/departamento' }
+        {
+          title: 'Departartamentos',
+          action: 'read',
+          subject: 'config-department',
+          path: '/sca/configurar/departamento'
+        },
+        {
+          title: 'Sessão Anual de Férias',
+          action: 'read',
+          subject: 'anual-session-map',
+          path: '/sca/configurar/sessaoanual'
+        }
 
-        // { title: 'Departartamentos', action: 'read', subject: 'acl-page', path: '/acl' }
+        // { title: 'Departartamentos', action: 'read', subject: 'acl-page', path: '/sca/acl' }
       ]
     }
   ]

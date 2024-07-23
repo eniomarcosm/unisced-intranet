@@ -1,40 +1,31 @@
 import { Card, CardContent, CardHeader, Divider, Grid, IconButton, Typography } from '@mui/material'
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
+import { useAuth } from 'src/hooks/useAuth'
 import CustomChip from 'src/@core/components/mui/chip'
-import CustomAvatar from 'src/@core/components/mui/avatar'
-import CustomTextField from 'src/@core/components/mui/text-field'
+import { DepartmentData, SelectiveData, AbsenceRequestData } from 'src/types/pages/generalData'
 import { firestore } from 'src/configs/firebaseConfig'
 import { collection, deleteDoc, doc, getDoc, getDocs, orderBy, query } from 'firebase/firestore'
 import toast from 'react-hot-toast'
-import { DepartmentData } from 'src/pages/configurar/departamento'
-import { UserStaffData } from 'src/pages/colaborador/cadastrar'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-import { useAuth } from 'src/hooks/useAuth'
-import { useForm } from 'react-hook-form'
 import { vacation_status } from 'src/constants/vacation'
-import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
-import { getInitials } from 'src/@core/utils/get-initials'
-import { Box } from '@mui/system'
-import Link from 'next/link'
-import { SelectiveData, VacationRequestData } from 'src/types/pages/generalData'
 import IconifyIcon from 'src/@core/components/icon'
-import roles from 'src/constants/roles'
-import ModalProgressBar from 'src/components/dialogs/ProgressBar'
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import { Box } from '@mui/system'
+import CustomAvatar from 'src/@core/components/mui/avatar'
+import ModalProgressBar from 'src/components/dialogs/ProgressBar'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { UserStaffData } from 'src/pages/sca/colaborador/cadastrar'
+import roles from 'src/constants/roles'
+import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
+import CustomTextField from 'src/@core/components/mui/text-field'
+import { VacationAprovalHRData, vacationAprovalHRSchema } from 'src/pages/sca/ferias/solicitacao'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { getInitials } from 'src/@core/utils/get-initials'
 import DialogTransition from 'src/components/dialogs/DialogTransition'
 
-export const vacationAprovalHRSchema = z.object({
-  staffId: z.string(),
-  organic_unit: z.string(),
-  departmentId: z.string(),
-  year: z.number()
-})
-
-export type VacationAprovalHRData = z.infer<typeof vacationAprovalHRSchema>
 interface CellType {
-  row: VacationRequestData
+  row: AbsenceRequestData
 }
 
 const renderClient = (row: UserStaffData) => {
@@ -53,14 +44,14 @@ const renderClient = (row: UserStaffData) => {
   }
 }
 
-export default function SolicitacaoFerias({}) {
+export default function SolicitacaoFaltas({}) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
   const [staff, setStaff] = useState<UserStaffData[]>([])
-  const [organicUnit, setOrganicUnit] = useState<SelectiveData[]>([])
-  const [departments, setDepartaments] = useState<DepartmentData[]>([])
+  const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
 
-  const [vacationRequest, setVacationRequest] = useState<VacationRequestData[]>([])
+  const [absenceRequest, setAbsenceRequest] = useState<AbsenceRequestData[]>([])
+  const [departments, setDepartaments] = useState<DepartmentData[]>([])
+  const [organicUnit, setOrganicUnit] = useState<SelectiveData[]>([])
 
   const { user } = useAuth()
 
@@ -73,6 +64,26 @@ export default function SolicitacaoFerias({}) {
   })
 
   const { departmentId, year, organic_unit } = watch()
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true)
+      try {
+        const staffArray: UserStaffData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'staff'))
+        querySnapshot.forEach(doc => {
+          staffArray.push(doc.data() as UserStaffData)
+        })
+        setStaff(staffArray)
+        console.log(staffArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+      setIsLoading(false)
+    }
+    getData()
+  }, [])
 
   useEffect(() => {
     const getData = async () => {
@@ -121,13 +132,15 @@ export default function SolicitacaoFerias({}) {
     const getData = async () => {
       setIsLoading(true)
       try {
-        const staffArray: UserStaffData[] = []
-        const querySnapshot = await getDocs(collection(firestore, 'staff'))
+        const absenceRequestArray: AbsenceRequestData[] = []
+        const querySnapshot = await getDocs(
+          query(collection(firestore, 'absence_justification'), orderBy('request_date', 'desc'))
+        )
         querySnapshot.forEach(doc => {
-          staffArray.push(doc.data() as UserStaffData)
+          absenceRequestArray.push(doc.data() as AbsenceRequestData)
         })
-        setStaff(staffArray)
-        console.log(staffArray)
+
+        setAbsenceRequest(absenceRequestArray)
       } catch (error) {
         toast.error('Erro ao solicitar dados!')
         console.log(error)
@@ -135,7 +148,7 @@ export default function SolicitacaoFerias({}) {
       setIsLoading(false)
     }
     getData()
-  }, [])
+  }, [currentStaf, user])
 
   useEffect(() => {
     const getData = async () => {
@@ -154,43 +167,32 @@ export default function SolicitacaoFerias({}) {
     getData()
   }, [])
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const vacationRequestArray: VacationRequestData[] = []
-        const querySnapshot = await getDocs(
-          query(collection(firestore, 'vacation_request'), orderBy('request_date', 'desc'))
-        )
-        querySnapshot.forEach(doc => {
-          vacationRequestArray.push(doc.data() as VacationRequestData)
-        })
+  const years = [...new Set(absenceRequest.map(request => new Date(request.request_date?.toDate()).getFullYear()))]
 
-        setVacationRequest(vacationRequestArray)
-      } catch (error) {
-        toast.error('Erro ao solicitar dados!')
-        console.log(error)
-      }
-    }
-    getData()
-  }, [currentStaf, user])
+  // const filterAbsenceRequests = absenceRequest.filter(aRequest =>
+  //   staff.some(
+  //     stf =>
+  //       stf.department === departmentId &&
+  //       stf.id === aRequest.staffId &&
+  //       year === new Date(aRequest?.start_date?.toDate()).getFullYear()
+  //   )
+  // )
 
-  const years = [...new Set(vacationRequest.map(request => new Date(request.start_date?.toDate()).getFullYear()))]
-
-  const filterDepartmentos = departments.filter(dpt => dpt.organic_unit === organic_unit)
-
-  const filterVacationResquests = vacationRequest.filter(vRequest => {
-    const requestYear = new Date(vRequest.start_date?.toDate()).getFullYear()
+  const filterAbsenceRequests = absenceRequest.filter(aRequest => {
+    const requestYear = new Date(aRequest.start_date?.toDate()).getFullYear()
 
     return (
-      (departmentId ? staff.some(stf => stf.department === departmentId && stf.id === vRequest.staffId) : true) &&
+      (departmentId ? staff.some(stf => stf.department === departmentId && stf.id === aRequest.staffId) : true) &&
       (year ? year === requestYear : true)
     )
   })
 
+  const filterDepartmentos = departments.filter(dpt => dpt.organic_unit === organic_unit)
+
   const getStatusCount = (index: number) => {
     let count = 0
 
-    filterVacationResquests.forEach(request => {
+    filterAbsenceRequests.forEach(request => {
       if (request?.director?.is_approved === index) {
         count++
       }
@@ -221,9 +223,9 @@ export default function SolicitacaoFerias({}) {
   }
 
   const onConfirmDelete = async () => {
-    deleteDoc(doc(firestore, 'vacation_request', selectedId))
+    deleteDoc(doc(firestore, 'absence_justification', selectedId))
       .then(() => {
-        setVacationRequest(prevVacation => prevVacation.filter(vacat => vacat.id !== selectedId))
+        setAbsenceRequest(prevAbsences => prevAbsences.filter(absence => absence.id !== selectedId))
         setDialogOpen(false)
         toast.success('Eliminou com sucesso!')
       })
@@ -272,17 +274,17 @@ export default function SolicitacaoFerias({}) {
       }
     },
 
-    {
-      flex: 0.2,
-      minWidth: 50,
-      field: 'days',
-      headerName: 'Dias',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row.days}
-        </Typography>
-      )
-    },
+    // {
+    //   flex: 0.2,
+    //   minWidth: 50,
+    //   field: 'days',
+    //   headerName: 'Dias',
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <Typography variant='body2' sx={{ color: 'text.primary' }}>
+    //       {params.row.days}
+    //     </Typography>
+    //   )
+    // },
     {
       flex: 0.3,
       minWidth: 120,
@@ -352,7 +354,7 @@ export default function SolicitacaoFerias({}) {
       headerName: 'Acções',
       renderCell: (params: GridRenderCellParams) => (
         <>
-          <IconButton color='info' LinkComponent={Link} href={`/ferias/solicitacao/${params.row.id}`}>
+          <IconButton color='info' LinkComponent={Link} href={`/faltas/solicitacao/${params.row.id}`}>
             <IconifyIcon fontSize='1.5rem' icon='tabler:pencil-plus' />
           </IconButton>
           {[roles.humanResoursesChief, roles.admin].includes(user!.role) ? (
@@ -370,12 +372,13 @@ export default function SolicitacaoFerias({}) {
   return (
     <>
       <DialogTransition
-        title='Solcitação de Férias'
-        description='Pretende Realmente Eliminar a Socitação?'
+        title='Solicitações de Faltas'
+        description='Pretende Realmente Eliminar a Solicitação?'
         open={isDialogOpen}
         onClose={() => setDialogOpen(false)}
         onConfirm={onConfirmDelete}
       />
+      <ModalProgressBar open={isLoading} />
       <ApexChartWrapper>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={3}>
@@ -383,7 +386,7 @@ export default function SolicitacaoFerias({}) {
               <CardContent sx={{ gap: 3, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <Typography variant='h5' sx={{ mb: 0.5 }}>
-                    {filterVacationResquests.length}
+                    {filterAbsenceRequests.length}
                   </Typography>
                   <Typography variant='body2'>Solicitações</Typography>
                 </Box>
@@ -442,9 +445,8 @@ export default function SolicitacaoFerias({}) {
       </ApexChartWrapper>
 
       <Card sx={{ mt: 5 }}>
-        <CardHeader title='Pedidos de Ferias' />
-        <Divider></Divider>
-        <ModalProgressBar open={isLoading} />
+        <CardHeader title='Histórico de Justificação de Faltas' />
+        <Divider sx={{ my: '0 !important' }} />
         <CardContent>
           <Grid container spacing={5}>
             {[roles.humanResoursesChief, roles.admin].includes(user!.role) && (
@@ -508,7 +510,7 @@ export default function SolicitacaoFerias({}) {
               <DataGrid
                 autoHeight
                 pagination
-                rows={filterVacationResquests}
+                rows={filterAbsenceRequests}
                 disableDensitySelector
                 disableColumnFilter
                 columns={columns}
@@ -535,7 +537,7 @@ export default function SolicitacaoFerias({}) {
   )
 }
 
-SolicitacaoFerias.acl = {
+SolicitacaoFaltas.acl = {
   action: 'read',
-  subject: 'vacation-response'
+  subject: 'absence-response'
 }

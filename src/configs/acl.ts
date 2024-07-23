@@ -35,10 +35,14 @@ const defineRulesFor = (role: string, subject: string) => {
       'vacation-response',
       'vacation-calendar',
       'vacation-map',
+      'vacation-marcation',
       'absence-request',
       'absence-response',
       'absence-history',
       'config-session',
+      'config-organic-unit',
+      'config-department',
+      'anual-session-map',
       'config-organic-unit',
       'config-department'
     ])
@@ -50,6 +54,7 @@ const defineRulesFor = (role: string, subject: string) => {
       'vacations-history',
       'vacation-response',
       'vacation-map',
+      'vacation-marcation',
       'absence-request',
       'absence-response',
       'absence-history'
@@ -62,6 +67,7 @@ const defineRulesFor = (role: string, subject: string) => {
       'vacations-history',
       'vacation-response',
       'vacation-map',
+      'vacation-marcation',
       'absence-request',
       'absence-response',
       'absence-history'
@@ -73,6 +79,7 @@ const defineRulesFor = (role: string, subject: string) => {
       'vacation-request',
       'vacations-history',
       'vacation-map',
+      'vacation-marcation',
       'absence-request',
       'absence-history'
     ])

@@ -118,6 +118,14 @@ export interface PrintDataProps {
   }
 }
 
+export interface VacationReservation {
+  id: string
+  staffId: string
+  departmentId: string
+  year: number
+  month: number
+}
+
 export function abbreviateName(fullName = ''): string {
   if (!fullName.trim()) {
     return ''

@@ -36,7 +36,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import { useRouter } from 'next/router'
 import { AbsenceRequestData, VacationRequestData } from 'src/types/pages/generalData'
-import { isWeekday } from 'src/pages/faltas/justificar'
+import { isWeekday } from 'src/pages/sca/faltas/justificar'
 
 // ** keynote: Mudar idioma de datepicker
 import DatePicker from 'react-datepicker'
@@ -77,17 +77,30 @@ const vacationRequestSchema = z
 
 type VacationRequest = z.infer<typeof vacationRequestSchema>
 
-export function vacationDays(admitedDate: Date) {
+export function vacationDays(admittedDate: Date | undefined) {
+  if (!admittedDate || isNaN(admittedDate.getTime())) {
+    console.error('Invalid admittedDate provided')
+
+    return 0
+  }
+
   let vacationDays = 0
   const todayDate = new Date()
 
-  const diffMilliseconds = todayDate?.getTime() - admitedDate?.getTime()
-  const diffDays = Math.floor(diffMilliseconds / (24 * 60 * 60 * 1000))
+  // Calculate the number of full months worked
+  const yearsDiff = todayDate.getFullYear() - admittedDate.getFullYear()
+  const monthsDiff = todayDate.getMonth() - admittedDate.getMonth()
+  const daysDiff = todayDate.getDate() - admittedDate.getDate()
 
-  if (diffDays >= 365 && diffDays < 730) {
-    vacationDays = 12
-  } else if (diffDays < 365) {
-    vacationDays = 0
+  let monthsWorked = yearsDiff * 12 + monthsDiff
+  if (daysDiff < 0) {
+    monthsWorked -= 1
+  }
+
+  if (monthsWorked <= 12) {
+    vacationDays = monthsWorked * 1 // 1 day of vacation per month
+  } else if (monthsWorked <= 24) {
+    vacationDays = (monthsWorked - 12) * 2.5
   } else {
     vacationDays = 30
   }

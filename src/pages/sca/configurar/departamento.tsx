@@ -246,3 +246,8 @@ export default function Departamento({}) {
     </Card>
   )
 }
+
+Departamento.acl = {
+  action: 'create',
+  subject: 'config-department'
+}

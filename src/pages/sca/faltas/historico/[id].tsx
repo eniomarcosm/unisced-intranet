@@ -10,8 +10,8 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { firestore } from 'src/configs/firebaseConfig'
 import { AbsenceForm } from 'src/documents/form-absence'
-import { UserStaffData } from 'src/pages/colaborador/cadastrar'
-import { DepartmentData } from 'src/pages/configurar/departamento'
+import { UserStaffData } from 'src/pages/sca/colaborador/cadastrar'
+import { DepartmentData } from 'src/pages/sca/configurar/departamento'
 import { AbsenceRequestData, PrintDataProps, SelectiveData } from 'src/types/pages/generalData'
 
 export default function ViewVacationRequest({}) {

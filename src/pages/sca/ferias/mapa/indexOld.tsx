@@ -26,7 +26,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import { Box } from '@mui/system'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-import { UserStaffData } from 'src/pages/colaborador/cadastrar'
+import { UserStaffData } from 'src/pages/sca/colaborador/cadastrar'
 import { getInitials } from 'src/@core/utils/get-initials'
 import Link from 'next/link'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
@@ -128,8 +128,6 @@ export default function VacationMap({}) {
 
     getData()
   }, [user, setValue])
-
-  console.log(currentStaf, departmentId)
 
   useEffect(() => {
     const getData = async () => {

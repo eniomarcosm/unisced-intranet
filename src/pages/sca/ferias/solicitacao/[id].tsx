@@ -8,7 +8,7 @@ import CustomTextField from 'src/@core/components/mui/text-field'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import { firestore } from 'src/configs/firebaseConfig'
 import { useAuth } from 'src/hooks/useAuth'
-import { UserStaffData } from 'src/pages/colaborador/cadastrar'
+import { UserStaffData } from 'src/pages/sca/colaborador/cadastrar'
 import { PrintDataProps, SelectiveData, VacationRequestData } from 'src/types/pages/generalData'
 import { FieldValues } from 'react-hook-form'
 import roles from 'src/constants/roles'
@@ -17,7 +17,7 @@ import ModalForm from 'src/components/modals/absence/ModalForm'
 import { AbsenceForm } from 'src/documents/form-absence'
 import IconifyIcon from 'src/@core/components/icon'
 import { useReactToPrint } from 'react-to-print'
-import { DepartmentData } from 'src/pages/configurar/departamento'
+import { DepartmentData } from 'src/pages/sca/configurar/departamento'
 
 export default function ViewVacationRequest({}) {
   const [currentVacationRequest, setCurrentVacationRequest] = useState<VacationRequestData>()
