@@ -115,7 +115,7 @@ const AuthProvider = ({ children }: Props) => {
         setUser(null)
         window.localStorage.removeItem(authConfig.userData)
         window.localStorage.removeItem(authConfig.storageTokenKeyName)
-        router.push('/login')
+        router.push('/sca/login')
       })
       .catch(error => console.error(error))
   }

@@ -71,7 +71,7 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
   }
 }))
 
-const Register = () => {
+const Register = (props) => {
   // ** States
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
@@ -191,7 +191,7 @@ const Register = () => {
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography sx={{ color: 'text.secondary', mr: 2 }}>Already have an account?</Typography>
-                <Typography component={LinkStyled} href='/login'>
+                <Typography component={LinkStyled} href='/sca/login'>
                   Sign in instead
                 </Typography>
               </Box>
