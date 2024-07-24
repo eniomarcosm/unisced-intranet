@@ -1,25 +1,56 @@
-import { Box, Card, CardContent, CardHeader, Divider, IconButton, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import IconifyIcon from 'src/@core/components/icon'
-import { UserStaffData } from './cadastrar'
+import { Box, Card, CardContent, CardHeader, Divider, Typography } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import { getInitials } from 'src/@core/utils/get-initials'
 import Link from 'next/link'
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore'
-import toast from 'react-hot-toast'
-import { SelectiveData } from 'src/types/pages/userStaff'
-import { firestore } from 'src/configs/firebaseConfig'
-import DialogTransition from 'src/components/dialogs/DialogTransition'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
+
+interface UserStaffData {
+  id: string
+  avatar: string | null
+  title: string
+  firstName: string
+  lastName: string
+  birthday: string | null
+  gender: string | null
+  phoneOne: string | null
+  phoneTwo: string | null
+  email: string
+  address: string | null
+  isProfileComplete: boolean
+  role: string
+  isNewEmployee: boolean
+  isBirthdayGreeting: boolean
+  employee: Employee
+  lastLogin: string | null
+  isFirstLogin: boolean
+  isBirthDay: boolean
+  officeContact: OfficeContact
+}
+
+interface Employee {
+  id: string
+  position: string
+  pbx: string | null
+  createdAt: string
+  updatedAt: string
+  department: string | null
+}
+
+interface OfficeContact {
+  officePhoneOne: string
+  officePhoneTwo: string
+  officePhoneThree: string
+}
 
 interface CellType {
   row: UserStaffData
 }
 
 const renderClient = (row: UserStaffData) => {
-  if (row.photoURL?.length) {
-    return <CustomAvatar src={row.photoURL} sx={{ mr: 2.5, width: 38, height: 38 }} />
+  if (row.avatar?.length) {
+    return <CustomAvatar src={row.avatar} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
     return (
       <CustomAvatar
@@ -159,7 +190,7 @@ export default function Colaboradores({}) {
         const data = await response.json()
         setStaff(data.users)
       } catch (error) {
-        toast.error(error?.message)
+        console.log(error)
       } finally {
         setIsLoading(false)
       }
@@ -228,7 +259,7 @@ export default function Colaboradores({}) {
           {params.row?.admited_at?.toDate().toLocaleDateString('pt-BR')}
         </Typography>
       )
-    },
+    }
 
     // {
     //   flex: 0.2,
@@ -253,18 +284,18 @@ export default function Colaboradores({}) {
     //   )
     // },
 
-    {
-      flex: 0.2,
-      field: 'id',
-      headerName: 'Acções',
-      renderCell: (params: GridRenderCellParams) => (
-        <>
-          <IconButton color='error' onClick={() => handleClickDelete(params.row.id)}>
-            <IconifyIcon fontSize='1.25rem' icon='tabler:trash' />
-          </IconButton>
-        </>
-      )
-    }
+    // {
+    //   flex: 0.2,
+    //   field: 'id',
+    //   headerName: 'Acções',
+    //   renderCell: (params: GridRenderCellParams) => (
+    //     <>
+    //       <IconButton color='error' onClick={() => handleClickDelete(params.row.id)}>
+    //         <IconifyIcon fontSize='1.25rem' icon='tabler:trash' />
+    //       </IconButton>
+    //     </>
+    //   )
+    // }
   ]
 
   return (

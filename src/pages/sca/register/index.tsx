@@ -71,7 +71,7 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
   }
 }))
 
-const Register = (props) => {
+const Register = ({}) => {
   // ** States
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
