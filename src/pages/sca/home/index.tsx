@@ -340,7 +340,7 @@ const Home = ({}) => {
                   {user?.fullName}
                 </Typography>
                 <Typography variant='h5' sx={{ fontWeight: 500, mb: 3 }}>
-                  Você esta no Sistema Interno de Controlo do Trabalhador da UnISCED
+                  Você esta no Sistema Interno de Controlo de Abstinência da UnISCED
                 </Typography>
               </CardContent>
             </Grid>

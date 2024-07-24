@@ -47,7 +47,7 @@ const Error500 = () => {
           <Typography sx={{ mb: 6, color: 'text.secondary' }}>
             There was an error with the internal server. Please contact your site administrator.
           </Typography>
-          <Button href='/' component={Link} variant='contained'>
+          <Button href='/sca/' component={Link} variant='contained'>
             Back to Home
           </Button>
         </BoxWrapper>

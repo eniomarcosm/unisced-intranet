@@ -124,7 +124,7 @@ const VerticalNavLink = ({
           component={Link}
           {...(item.disabled && { tabIndex: -1 })}
           className={isNavLinkActive() ? 'active' : ''}
-          href={item.path === undefined ? '/' : `${item.path}`}
+          href={item.path === undefined ? '/sca/' : `${item.path}`}
           {...(item.openInNewTab ? { target: '_blank' } : null)}
           onClick={e => {
             if (item.path === undefined) {
