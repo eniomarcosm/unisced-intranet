@@ -570,7 +570,7 @@ export default function MarcarFerias({}) {
     <>
       <div>{/* <VacationMap /> */}</div>
       <Card style={{ display: 'none' }}>
-        <CardHeader title='Marcação de Férias' />
+        <CardHeader title='Marcação Anual de Férias' />
         <Divider />
         <ModalProgressBar open={isLoading} />
         <CardContent>
