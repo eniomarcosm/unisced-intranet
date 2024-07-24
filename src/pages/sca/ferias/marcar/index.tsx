@@ -30,7 +30,6 @@ import { VacationReservation } from 'src/types/pages/generalData'
 import { AnualData } from 'src/pages/sca/configurar/sessaoanual'
 import ModalProgressBar from 'src/components/dialogs/ProgressBar'
 import roles from 'src/constants/roles'
-import { VacationMap } from 'src/documents/vacation-map'
 
 const marcacaoSchema = z.object({
   year: z.number(),

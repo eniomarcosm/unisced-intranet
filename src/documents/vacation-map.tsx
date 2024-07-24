@@ -6,8 +6,6 @@ interface VacationMapProps extends React.HTMLAttributes<HTMLDivElement> {
   data: PrintDataProps
 }
 
-const td = {}
-
-export const VacationMap = React.forwardRef<HTMLDivElement, VacationMapProps>((props, ref) => {
-  return <div style={{ backgroundColor: 'white' }}>Hello</div>
+export const VacationMap = React.forwardRef<HTMLDivElement, VacationMapProps>(() => {
+  return <div style={{ backgroundColor: 'white' }}></div>
 })
