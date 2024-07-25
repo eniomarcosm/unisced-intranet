@@ -102,7 +102,7 @@ const Register = ({}) => {
         >
           <RegisterIllustration
             alt='register-illustration'
-            src={`/images/pages/${imageSource}-${theme.palette.mode}.png`}
+            src={`/sca/images/pages/${imageSource}-${theme.palette.mode}.png`}
           />
           <FooterIllustrationsV2 />
         </Box>

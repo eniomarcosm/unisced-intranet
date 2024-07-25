@@ -36,29 +36,28 @@ const Img = styled('img')(({ theme }) => ({
   }
 }))
 
-const Error401 = () => {
+const Error404 = () => {
   return (
     <Box className='content-center'>
       <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <BoxWrapper>
           <Typography variant='h2' sx={{ mb: 1.5 }}>
-            You are not authorized!
+            Page Not Found :(
           </Typography>
-          <Typography sx={{ color: 'text.secondary' }}>
-            You do not have permission to view this page using the credentials that you have provided while login.
+          <Typography sx={{ mb: 6, color: 'text.secondary' }}>
+            Oops! 😖 The requested URL was not found on this server.
           </Typography>
-          <Typography sx={{ mb: 6, color: 'text.secondary' }}>Please contact your site administrator.</Typography>
           <Button href='/sca/' component={Link} variant='contained'>
             Back to Home
           </Button>
         </BoxWrapper>
-        <Img height='500' alt='error-illustration' src='/images/pages/401.png' />
+        <Img height='500' alt='error-illustration' src='/sca/images/pages/404.png' />
       </Box>
       <FooterIllustrations />
     </Box>
   )
 }
 
-Error401.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+Error404.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-export default Error401
+export default Error404

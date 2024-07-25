@@ -106,7 +106,7 @@ export default function JustificarFalta({}) {
 
   // ** Image Uploader
 
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/documento-erro.png')
+  const [imgSrc, setImgSrc] = useState<string>('/sca/images/avatars/documento-erro.png')
 
   const [inputValue, setInputValue] = useState<string>('')
 
@@ -118,7 +118,7 @@ export default function JustificarFalta({}) {
 
       reader.onload = () => {
         if (selectedFile.type.toLowerCase() === 'application/pdf') {
-          setImgSrc('/images/avatars/documento.png')
+          setImgSrc('/sca/images/avatars/documento.png')
         } else {
           setImgSrc(reader.result as string)
         }
@@ -135,7 +135,7 @@ export default function JustificarFalta({}) {
   const handleInputImageReset = () => {
     setInputValue('')
     setValue('evidenceURL', '')
-    setImgSrc('/images/avatars/documento-erro.png')
+    setImgSrc('/sca/images/avatars/documento-erro.png')
   }
 
   const [isLoading, setIsLoading] = useState(false)

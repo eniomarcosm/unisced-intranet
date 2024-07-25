@@ -40,7 +40,7 @@ const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
             alt='mask'
             className={className}
             {...(height && { height })}
-            src={`/images/pages/auth-v2-mask-${theme.palette.mode}.png`}
+            src={`/sca/images/pages/auth-v2-mask-${theme.palette.mode}.png`}
           />
         ) : typeof image === 'string' ? (
           <MaskImg alt='mask' src={image} className={className} {...(height && { height })} />

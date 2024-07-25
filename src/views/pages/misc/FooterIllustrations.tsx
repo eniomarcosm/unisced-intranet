@@ -18,7 +18,7 @@ const MaskImg = styled('img')(() => ({
   position: 'absolute'
 }))
 
-const FooterIllustrations = (props: FooterIllustrationsProp) => {
+const FooterIllustrations = (props) => {
   // ** Props
   const { image } = props
 
@@ -32,7 +32,7 @@ const FooterIllustrations = (props: FooterIllustrationsProp) => {
     return (
       <>
         {!image ? (
-          <MaskImg alt='mask' src={`/images/pages/misc-mask-${theme.palette.mode}.png`} />
+          <MaskImg alt='mask' src={`/sca/images/pages/misc-mask-${theme.palette.mode}.png`} />
         ) : typeof image === 'string' ? (
           <MaskImg alt='mask' src={image} />
         ) : (

@@ -83,7 +83,7 @@ const ForgotPassword = () => {
         >
           <ForgotPasswordIllustration
             alt='forgot-password-illustration'
-            src={`/images/pages/auth-v2-forgot-password-illustration-${theme.palette.mode}.png`}
+            src={`/sca/images/pages/auth-v2-forgot-password-illustration-${theme.palette.mode}.png`}
           />
           <FooterIllustrationsV2 />
         </Box>

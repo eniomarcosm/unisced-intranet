@@ -36,28 +36,28 @@ const Img = styled('img')(({ theme }) => ({
   }
 }))
 
-const Error404 = () => {
+const Error500 = () => {
   return (
     <Box className='content-center'>
       <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <BoxWrapper>
           <Typography variant='h2' sx={{ mb: 1.5 }}>
-            Page Not Found :(
+            Oops, something went wrong!
           </Typography>
           <Typography sx={{ mb: 6, color: 'text.secondary' }}>
-            Oops! 😖 The requested URL was not found on this server.
+            There was an error with the internal server. Please contact your site administrator.
           </Typography>
           <Button href='/sca/' component={Link} variant='contained'>
             Back to Home
           </Button>
         </BoxWrapper>
-        <Img height='500' alt='error-illustration' src='/images/pages/404.png' />
+        <Img height='500' alt='error-illustration' src='/sca/images/pages/404.png' />
       </Box>
       <FooterIllustrations />
     </Box>
   )
 }
 
-Error404.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+Error500.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-export default Error404
+export default Error500

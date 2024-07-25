@@ -36,28 +36,29 @@ const Img = styled('img')(({ theme }) => ({
   }
 }))
 
-const Error500 = () => {
+const Error401 = ({}) => {
   return (
     <Box className='content-center'>
       <Box sx={{ p: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         <BoxWrapper>
           <Typography variant='h2' sx={{ mb: 1.5 }}>
-            Oops, something went wrong!
+            You are not authorized!
           </Typography>
-          <Typography sx={{ mb: 6, color: 'text.secondary' }}>
-            There was an error with the internal server. Please contact your site administrator.
+          <Typography sx={{ color: 'text.secondary' }}>
+            You do not have permission to view this page using the credentials that you have provided while login.
           </Typography>
+          <Typography sx={{ mb: 6, color: 'text.secondary' }}>Please contact your site administrator.</Typography>
           <Button href='/sca/' component={Link} variant='contained'>
             Back to Home
           </Button>
         </BoxWrapper>
-        <Img height='500' alt='error-illustration' src='/images/pages/404.png' />
+        <Img height='500' alt='error-illustration' src='/sca/images/pages/401.png' />
       </Box>
       <FooterIllustrations />
     </Box>
   )
 }
 
-Error500.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+Error401.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-export default Error500
+export default Error401

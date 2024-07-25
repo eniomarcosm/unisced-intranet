@@ -322,7 +322,7 @@ const Home = ({}) => {
           <Grid container spacing={6}>
             <StyledGrid item md={4} xs={12}>
               <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <img width={300} height={176} alt='Welcome Avatar' src='/images/pages/home-baner.png' />
+                <img width={300} height={176} alt='Welcome Avatar' src='/sca/images/pages/home-baner.png' />
               </CardContent>
             </StyledGrid>
             <Grid

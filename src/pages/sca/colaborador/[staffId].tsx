@@ -170,7 +170,7 @@ export default function CreateStaff({}) {
 
   // ** Image Uploader
 
-  const [imgSrc, setImgSrc] = useState<string>('/images/avatars/3.png')
+  const [imgSrc, setImgSrc] = useState<string>('/sca/images/avatars/3.png')
 
   const [inputValue, setInputValue] = useState<string>('')
 
@@ -191,7 +191,7 @@ export default function CreateStaff({}) {
   const handleInputImageReset = () => {
     setInputValue('')
     setValue('photoURL', '')
-    setImgSrc('/images/avatars/3.png')
+    setImgSrc('/sca/images/avatars/3.png')
   }
 
   return (
