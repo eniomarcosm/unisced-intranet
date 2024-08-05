@@ -4,16 +4,16 @@ import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 const navigation = (): HorizontalNavItemsType => [
   {
     title: 'Home',
-    path: '/sca/home',
+    path: '/home',
     icon: 'tabler:smart-home'
   },
   {
     title: 'Second Page',
-    path: '/sca/second-page',
+    path: '/second-page',
     icon: 'tabler:mail'
   },
   {
-    path: '/sca/acl',
+    path: '/acl',
     action: 'read',
     subject: 'acl-page',
     title: 'Access Control',

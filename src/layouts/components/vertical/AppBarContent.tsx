@@ -27,7 +27,7 @@ const notifications: NotificationsType[] = [
   //   meta: 'Today',
   //   avatarAlt: 'Flora',
   //   title: 'Modificação da Senha 🎉',
-  //   avatarImg: '/sca/images/avatars/4.png',
+  //   avatarImg: '/images/avatars/4.png',
   //   subtitle: 'Won the monthly best seller badge'
   // }
 ]

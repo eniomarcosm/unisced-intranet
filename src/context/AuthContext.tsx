@@ -91,7 +91,7 @@ const AuthProvider = ({ children }: Props) => {
                   setUser({ ...userData })
                   params.rememberMe ? window.localStorage.setItem(authConfig.userData, JSON.stringify(userData)) : null
 
-                  const redirectURL = returnUrl && returnUrl !== '/sca/' ? returnUrl : '/sca/'
+                  const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
 
                   router.replace(redirectURL as string)
                 }
@@ -115,7 +115,7 @@ const AuthProvider = ({ children }: Props) => {
         setUser(null)
         window.localStorage.removeItem(authConfig.userData)
         window.localStorage.removeItem(authConfig.storageTokenKeyName)
-        router.push('/sca/login')
+        router.push('/login')
       })
       .catch(error => console.error(error))
   }

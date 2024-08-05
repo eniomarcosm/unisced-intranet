@@ -1,4 +1,5 @@
 import { Timestamp } from 'firebase/firestore'
+import { UserStaffData } from 'src/pages/colaborador/cadastrar'
 
 export interface SelectiveData {
   id: string
@@ -86,36 +87,39 @@ export interface AbsenceRequestData {
 }
 
 export interface PrintDataProps {
-  name?: string
   department?: string
-  staff_code?: string
-  request_date?: string
-  return_time?: string
-  reason?: string
-  job_position?: string
-  start_date?: string
-  end_date?: string
-  human_resources?: {
-    comment?: string
-    updated_at?: Timestamp
-    is_approved?: number
-    name?: string
-    day_vacations?: number
-    reason?: string
-    sactions?: string[]
-  }
-  superior?: {
-    comment: string
-    updated_at: Timestamp
-    is_approved: number
-    name: string
-  }
-  director?: {
-    comment: string
-    updated_at: Timestamp
-    is_approved: number
-    name: string
-  }
+  staff?: UserStaffData[]
+  vacationReservation?: VacationReservation[]
+
+  // name?: string
+  // staff_code?: string
+  // request_date?: string
+  // return_time?: string
+  // reason?: string
+  // job_position?: string
+  // start_date?: string
+  // end_date?: string
+  // human_resources?: {
+  //   comment?: string
+  //   updated_at?: Timestamp
+  //   is_approved?: number
+  //   name?: string
+  //   day_vacations?: number
+  //   reason?: string
+  //   sactions?: string[]
+  // }
+  // superior?: {
+  //   comment: string
+  //   updated_at: Timestamp
+  //   is_approved: number
+  //   name: string
+  // }
+  // director?: {
+  //   comment: string
+  //   updated_at: Timestamp
+  //   is_approved: number
+  //   name: string
+  // }
 }
 
 export interface VacationReservation {

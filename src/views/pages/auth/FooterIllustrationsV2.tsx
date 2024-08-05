@@ -22,7 +22,7 @@ const MaskImg = styled('img')(({ theme }) => ({
   }
 }))
 
-const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
+const FooterIllustrationsV2 = (props) => {
   // ** Props
   const { image, height, className } = props
 
@@ -40,7 +40,7 @@ const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
             alt='mask'
             className={className}
             {...(height && { height })}
-            src={`/sca/images/pages/auth-v2-mask-${theme.palette.mode}.png`}
+            src={`/images/pages/auth-v2-mask-${theme.palette.mode}.png`}
           />
         ) : typeof image === 'string' ? (
           <MaskImg alt='mask' src={image} className={className} {...(height && { height })} />

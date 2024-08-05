@@ -94,7 +94,7 @@ const VerticalNavHeader = (props: Props) => {
       {userNavMenuBranding ? (
         userNavMenuBranding(props)
       ) : (
-        <LinkStyled href='/sca/'>
+        <LinkStyled href='/'>
           <Image src={uniscedLogo} alt='Logotipo do Instituto Piaget' width={40} height={40} />
           <HeaderTitle
             variant='h4'

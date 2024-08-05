@@ -24,13 +24,13 @@ const AuthGuard = (props: AuthGuardProps) => {
       }
 
       if (auth.user === null && !window.localStorage.getItem('user')) {
-        if (router.asPath !== '/sca/') {
+        if (router.asPath !== '/') {
           router.replace({
-            pathname: '/sca/login',
+            pathname: '/login',
             query: { returnUrl: router.asPath }
           })
         } else {
-          router.replace('/sca/login')
+          router.replace('/login')
         }
       }
     },

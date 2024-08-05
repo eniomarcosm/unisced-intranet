@@ -14,7 +14,7 @@ import { AbilityContext } from 'src/layouts/components/acl/Can'
 import { buildAbilityFor } from 'src/configs/acl'
 
 // ** Component Import
-import NotAuthorized from 'src/pages/sca/401'
+import NotAuthorized from 'src/pages/401'
 import Spinner from 'src/@core/components/spinner'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 
@@ -43,7 +43,7 @@ const AclGuard = (props: AclGuardProps) => {
   let ability: AppAbility
 
   useEffect(() => {
-    if (auth.user && auth.user.role && !guestGuard && router.route === '/sca/') {
+    if (auth.user && auth.user.role && !guestGuard && router.route === '/') {
       const homeRoute = getHomeRoute(auth.user.role)
       router.replace(homeRoute)
     }
@@ -52,7 +52,7 @@ const AclGuard = (props: AclGuardProps) => {
   // User is logged in, build ability for the user based on his role
   if (auth.user && !ability) {
     ability = buildAbilityFor(auth.user.role, aclAbilities.subject)
-    if (router.route === '/sca/') {
+    if (router.route === '/') {
       return <Spinner />
     }
   }
@@ -70,7 +70,7 @@ const AclGuard = (props: AclGuardProps) => {
 
   // Check the access of current user and render pages
   if (ability && auth.user && ability.can(aclAbilities.action, aclAbilities.subject)) {
-    if (router.route === '/sca/') {
+    if (router.route === '/') {
       return <Spinner />
     }
 

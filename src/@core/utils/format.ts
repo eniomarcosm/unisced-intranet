@@ -84,7 +84,7 @@ export const formatExpirationDate = (value: string) => {
     .replace(/^([0]+)\/|[0]+$/g, '0') // 0/ > 0 and 00 > 0
     // To allow only digits and `/`
     .replace(/[^\d\/]|^[\/]*$/g, '')
-    .replace(/\/\//g, '/sca/') // Prevent entering more than 1 `/`
+    .replace(/\/\//g, '/') // Prevent entering more than 1 `/`
 
   return finalValue
 }

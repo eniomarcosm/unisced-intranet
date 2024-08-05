@@ -91,7 +91,7 @@ const HorizontalNavLink = (props: Props) => {
           {...(item.disabled && { tabIndex: -1 })}
           className={clsx({ active: isNavLinkActive() })}
           target={item.openInNewTab ? '_blank' : undefined}
-          href={item.path === undefined ? '/sca/' : `${item.path}`}
+          href={item.path === undefined ? '/' : `${item.path}`}
           onClick={e => {
             if (item.path === undefined) {
               e.preventDefault()

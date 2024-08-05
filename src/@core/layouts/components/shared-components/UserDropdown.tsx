@@ -104,7 +104,7 @@ const UserDropdown = (props: Props) => {
       >
         <Avatar
           alt={user?.fullName?.toString()}
-          src={user?.avatar ? user?.avatar : '/sca/images/avatars/5.png'}
+          src={user?.avatar ? user?.avatar : '/images/avatars/5.png'}
           onClick={handleDropdownOpen}
           sx={{ width: 38, height: 38 }}
         />
@@ -129,7 +129,7 @@ const UserDropdown = (props: Props) => {
             >
               <Avatar
                 alt={user?.fullName?.toString()}
-                src={user?.avatar ? user?.avatar : '/sca/images/avatars/5.png'}
+                src={user?.avatar ? user?.avatar : '/images/avatars/5.png'}
                 onClick={handleDropdownOpen}
                 sx={{ width: 38, height: 38 }}
               />
