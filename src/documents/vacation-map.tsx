@@ -41,7 +41,7 @@ function fixedVacationDays(admittedDate: Date | undefined) {
     monthsWorked -= 1
   }
 
-  if (monthsWorked >= 12) {
+  if (monthsWorked <= 12) {
     vacationDays = 12
   } else if (monthsWorked >= 24) {
     vacationDays = 30
@@ -77,6 +77,22 @@ export const VacationMap = React.forwardRef<HTMLDivElement, VacationMapProps>((p
         <p style={{ margin: '0.1em 0' }}>ADMINISTRAÇÃO</p>
         <p style={{ margin: '0.1em 0' }}>DEPARTAMENTO DE RECURSOS HUMANOS</p>
         <p style={{ margin: '0.1em 0' }}>Plano de Férias da/do {data?.department}</p>
+      </div>
+
+      <div
+        style={{
+          position: 'fixed',
+          right: 4,
+          marginRight: 20,
+          textAlign: 'center',
+          marginTop: '1.5em',
+          marginBottom: '1.5em'
+        }}
+      >
+        <p style={{ margin: '0.1em 0' }}>Visto por</p>
+        <p style={{ margin: '0.1em 0', marginRight: 15, textAlign: 'right' }}>O Reitor</p>
+        <p style={{ margin: '0.1em 0' }}>__________________________________</p>
+        <p style={{ margin: '0.1em 0' }}>Prof. Doutor Martins dos Santos Laita</p>
       </div>
       {/* Adjusted to center the text */}
       <table

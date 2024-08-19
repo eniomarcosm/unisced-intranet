@@ -77,7 +77,6 @@ export interface AbsenceRequestData {
     is_approved: number
     name: string
   }
-
   director: {
     comment: string
     updated_at: Timestamp
@@ -87,39 +86,38 @@ export interface AbsenceRequestData {
 }
 
 export interface PrintDataProps {
+  name?: string
   department?: string
   staff?: UserStaffData[]
   vacationReservation?: VacationReservation[]
-
-  // name?: string
-  // staff_code?: string
-  // request_date?: string
-  // return_time?: string
-  // reason?: string
-  // job_position?: string
-  // start_date?: string
-  // end_date?: string
-  // human_resources?: {
-  //   comment?: string
-  //   updated_at?: Timestamp
-  //   is_approved?: number
-  //   name?: string
-  //   day_vacations?: number
-  //   reason?: string
-  //   sactions?: string[]
-  // }
-  // superior?: {
-  //   comment: string
-  //   updated_at: Timestamp
-  //   is_approved: number
-  //   name: string
-  // }
-  // director?: {
-  //   comment: string
-  //   updated_at: Timestamp
-  //   is_approved: number
-  //   name: string
-  // }
+  staff_code?: string
+  request_date?: string
+  reason?: string
+  return_time?: string
+  start_date?: string
+  end_date?: string
+  superior?: {
+    comment: string
+    updated_at: Timestamp
+    is_approved: number
+    name: string
+  }
+  human_resources?: {
+    comment: string
+    updated_at: Timestamp
+    sactions: string[]
+    reason: string
+    day_vacations: number
+    is_approved: number
+    name: string
+  }
+  director?: {
+    comment: string
+    updated_at: Timestamp
+    is_approved: number
+    name: string
+  }
+  job_position?: string
 }
 
 export interface VacationReservation {

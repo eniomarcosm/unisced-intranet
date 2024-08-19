@@ -14,7 +14,7 @@ import {
 } from '@react-email/components'
 import * as React from 'react'
 
-interface VacationRequestEmailProps {
+export interface VacationRequestEmailProps {
   name?: string
   start_date?: Date | string
   end_date?: Date | string

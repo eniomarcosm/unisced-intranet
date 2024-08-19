@@ -51,7 +51,7 @@ const navigation = (): VerticalNavItemsType => {
       children: [
         {
           title: 'Marcação de Férias',
-          path: '/ferias/marcar',
+          path: '/ferias/mapa',
           action: 'create',
           subject: 'vacation-marcation'
         },
@@ -76,7 +76,7 @@ const navigation = (): VerticalNavItemsType => {
         // },
         {
           title: 'Mapa de Férias',
-          path: '/ferias/mapa',
+          path: '/ferias/reservadas',
           action: 'read',
           subject: 'vacation-map'
         },

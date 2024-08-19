@@ -1,21 +1,33 @@
 import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
-
+import nodemailer from 'nodemailer'
 import VacationRequestEmail from 'src/emails/vacation_request'
-
-const resend = new Resend(process.env.RESEND_API_KEY)
+import { renderToStaticMarkup } from 'react-dom/server'
 
 export async function POST(request: Request) {
   const { email, name, start_date, end_date, days } = await request.json()
   console.log(email, name, start_date, end_date, days)
 
-  await resend.emails.send({
-    from: 'onboarding@resend.dev',
-    to: email,
-    subject: 'Pedido de Férias',
+  // Create a transporter using SMTP
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+    auth: {
+      user: process.env.SMTP_USER, // SMTP username
+      pass: process.env.SMTP_PASS // SMTP password
+    }
+  })
 
-    // html: '<p>Congrats on sending your <strong>first email</strong>!</p>'
-    react: VacationRequestEmail({ name, start_date, end_date, days })
+  const emailHtml = renderToStaticMarkup(
+    <VacationRequestEmail name={name} start_date={start_date} end_date={end_date} days={days} />
+  )
+
+  // Send email using the transporter
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM, // Sender address
+    to: email, // List of receivers
+    subject: 'Pedido de Férias', // Subject line
+    html: emailHtml // HTML body
   })
 
   return NextResponse.json({ message: 'Email sent', status: 'OK' })

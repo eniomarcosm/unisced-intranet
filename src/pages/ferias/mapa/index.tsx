@@ -1,32 +1,72 @@
-import { Button, Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material'
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore'
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Checkbox,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Typography
+} from '@mui/material'
+import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
+import Link from 'next/link'
+import { Controller, FieldValues, useForm } from 'react-hook-form'
 import CustomAutocomplete from 'src/@core/components/mui/autocomplete'
 import CustomTextField from 'src/@core/components/mui/text-field'
-import { firestore } from 'src/configs/firebaseConfig'
-import roles from 'src/constants/roles'
-import { useAuth } from 'src/hooks/useAuth'
-import { DepartmentData, SelectiveData, VacationReservation } from 'src/types/pages/generalData'
-import { VacationAprovalHRData, vacationAprovalHRSchema } from '../solicitacao'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { DataGrid, GridColDef, GridRenderCellParams, GridToolbar } from '@mui/x-data-grid'
-import { Box } from '@mui/system'
 import CustomAvatar from 'src/@core/components/mui/avatar'
+import { z } from 'zod'
 import { UserStaffData } from 'src/pages/colaborador/cadastrar'
 import { getInitials } from 'src/@core/utils/get-initials'
-import Link from 'next/link'
-import ModalProgressBar from 'src/components/dialogs/ProgressBar'
+import { useEffect, useRef, useState } from 'react'
+import { useAuth } from 'src/hooks/useAuth'
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore'
+import { firestore } from 'src/configs/firebaseConfig'
+import toast from 'react-hot-toast'
+import { DepartmentData, PrintDataProps, SelectiveData, VacationReservation } from 'src/types/pages/generalData'
 import { AnualData } from 'src/pages/configurar/sessaoanual'
+import ModalProgressBar from 'src/components/dialogs/ProgressBar'
+import roles from 'src/constants/roles'
+import { VacationMap } from 'src/documents/vacation-map'
+import { useReactToPrint } from 'react-to-print'
 import IconifyIcon from 'src/@core/components/icon'
+
+const marcacaoSchema = z.object({
+  year: z.number(),
+  month: z.number(),
+  departmentId: z.string().optional(),
+  organic_unit: z.string(),
+  third_request: z.boolean().default(false).optional(),
+  staffId: z.string().optional()
+})
+
+export type MarcacaoData = z.infer<typeof marcacaoSchema>
+
+const months = [
+  { id: 1, name: 'Janeiro' },
+  { id: 2, name: 'Fevereiro' },
+  { id: 3, name: 'Março' },
+  { id: 4, name: 'Abril' },
+  { id: 5, name: 'Maio' },
+  { id: 6, name: 'Junho' },
+  { id: 7, name: 'Julho' },
+  { id: 8, name: 'Agosto' },
+  { id: 9, name: 'Setembro' },
+  { id: 10, name: 'Outubro' },
+  { id: 11, name: 'Novembro' },
+  { id: 12, name: 'Dezembro' }
+]
 
 interface CellType {
   row: UserStaffData
 }
 
 const renderClient = (row: UserStaffData) => {
-  if (row.photoURL?.length) {
+  if (row?.photoURL?.length) {
     return <CustomAvatar src={row.photoURL} sx={{ mr: 2.5, width: 38, height: 38 }} />
   } else {
     return (
@@ -41,58 +81,100 @@ const renderClient = (row: UserStaffData) => {
   }
 }
 
-// const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
-//   <Tooltip {...props} classes={{ popper: className }} />
-// ))({
-//   [`& .${tooltipClasses.tooltip}`]: {
-//     maxWidth: 200
-//   }
-// })
-
-// const isApprovedAndInMonth = (vrequest: VacationRequestData, month: number) => {
-//   const startMonth =
-//     vrequest?.start_date instanceof Date ? vrequest?.start_date.getMonth() : vrequest?.start_date?.toDate?.().getMonth()
-//   const endMonth =
-//     vrequest?.end_date instanceof Date ? vrequest?.end_date.getMonth() : vrequest.end_date?.toDate?.().getMonth()
-
-//   const isInMonth = startMonth === month || endMonth === month
-//   const isApproved = vrequest?.director?.is_approved === 1
-
-//   return isInMonth && isApproved
-// }
-
-// const isNotApprovedInMonth = (vrequest: VacationRequestData, month: number) => {
-//   const startMonth =
-//     vrequest?.start_date instanceof Date ? vrequest?.start_date.getMonth() : vrequest?.start_date?.toDate?.().getMonth()
-//   const endMonth =
-//     vrequest?.end_date instanceof Date ? vrequest?.end_date.getMonth() : vrequest.end_date?.toDate?.().getMonth()
-
-//   const isInMonth = startMonth === month || endMonth === month
-
-//   // const isApproved = vrequest?.ch?.is_approved === 0
-
-//   return isInMonth
-// }
-
-export default function VacationMap({}) {
-  const { user } = useAuth()
-  const [organicUnit, setOrganicUnit] = useState<SelectiveData[]>([])
-  const [departments, setDepartaments] = useState<DepartmentData[]>([])
+export default function MarcarFerias({}) {
   const [staff, setStaff] = useState<UserStaffData[]>([])
+  const [currentStaf, setCurrentStaff] = useState<UserStaffData>()
   const [vacationReservation, setVacationReservation] = useState<VacationReservation[]>([])
+  const [departments, setDepartments] = useState<DepartmentData[]>([])
+  const [organicUnit, setOrganicUnit] = useState<SelectiveData[]>([])
+  const [checkReservation, setCheckReservation] = useState<boolean>(false)
+
   const [anos, setAnos] = useState<AnualData[]>([])
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const {
+    control,
     setValue,
-    watch,
-    formState: { errors }
-  } = useForm<VacationAprovalHRData>({
-    resolver: zodResolver(vacationAprovalHRSchema)
-  })
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch
+  } = useForm<MarcacaoData>({ resolver: zodResolver(marcacaoSchema) })
 
-  const { organic_unit, departmentId, year } = watch()
+  const { departmentId, year, third_request, organic_unit } = watch()
+
+  const { user } = useAuth()
+
+  useEffect(() => {
+    const getData = async () => {
+      // setIsLoading(true)
+
+      const docRef = doc(firestore, 'staff', user!.staffId)
+      try {
+        const docSnap = await getDoc(docRef)
+        if (docSnap.exists()) {
+          setCurrentStaff(docSnap.data() as UserStaffData)
+
+          // if ([roles.sessionChief, roles.director, roles.rector, roles.technician].includes(user!.role)) {
+          setValue('departmentId', docSnap.data().department)
+
+          // }
+        } else {
+          console.log('No such document!')
+        }
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+
+      // setIsLoading(false)
+    }
+
+    getData()
+  }, [user, setValue])
+
+  useEffect(() => {
+    const getData = async () => {
+      // setIsLoading(true)
+
+      try {
+        const userStaffArray: UserStaffData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'staff'))
+        querySnapshot.forEach(doc => {
+          userStaffArray.push(doc.data() as UserStaffData)
+        })
+        console.log(userStaffArray)
+
+        setStaff(userStaffArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+
+      // setIsLoading(false)
+    }
+    getData()
+  }, [])
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const departmentArray: DepartmentData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'departments'))
+        querySnapshot.forEach(doc => {
+          departmentArray.push(doc.data() as DepartmentData)
+        })
+        setDepartments(departmentArray)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+    }
+    getData()
+  }, [])
+
+  const filterDepartmentos = departments.filter(dpt => dpt.organic_unit === organic_unit)
 
   const getData = async () => {
     // setIsLoading(true)
@@ -103,7 +185,7 @@ export default function VacationMap({}) {
       querySnapshot.forEach(doc => {
         vacationRequestArray.push(doc.data() as VacationReservation)
       })
-      console.log(vacationRequestArray)
+      console.log('request:', vacationRequestArray)
 
       setVacationReservation(vacationRequestArray)
     } catch (error) {
@@ -138,51 +220,6 @@ export default function VacationMap({}) {
 
   useEffect(() => {
     const getData = async () => {
-      setIsLoading(true)
-
-      const docRef = doc(firestore, 'staff', user!.staffId)
-      try {
-        const docSnap = await getDoc(docRef)
-        if (docSnap.exists()) {
-          if ([roles.sessionChief, roles.director, roles.rector, roles.technician].includes(user!.role)) {
-            setValue('departmentId', docSnap.data().department)
-          }
-        } else {
-          console.log('No such document!')
-        }
-      } catch (error) {
-        toast.error('Erro ao solicitar dados!')
-        console.log(error)
-      }
-      setIsLoading(false)
-    }
-
-    getData()
-  }, [user, setValue])
-
-  useEffect(() => {
-    const getData = async () => {
-      setIsLoading(true)
-      try {
-        const userStaffArray: UserStaffData[] = []
-        const querySnapshot = await getDocs(collection(firestore, 'staff'))
-        querySnapshot.forEach(doc => {
-          userStaffArray.push(doc.data() as UserStaffData)
-        })
-        console.log(userStaffArray)
-
-        setStaff(userStaffArray)
-      } catch (error) {
-        toast.error('Erro ao solicitar dados!')
-        console.log(error)
-      }
-      setIsLoading(false)
-    }
-    getData()
-  }, [])
-
-  useEffect(() => {
-    const getData = async () => {
       try {
         const dataArray: SelectiveData[] = []
         const querySnapshot = await getDocs(collection(firestore, 'organic_unit'))
@@ -199,61 +236,31 @@ export default function VacationMap({}) {
     getData()
   }, [])
 
-  useEffect(() => {
-    const getData = async () => {
-      setIsLoading(true)
-      try {
-        const dptArray: DepartmentData[] = []
-        const querySnapshot = await getDocs(collection(firestore, 'departments'))
-        querySnapshot.forEach(doc => {
-          dptArray.push(doc.data() as DepartmentData)
-        })
-        setDepartaments(dptArray)
-      } catch (error) {
-        toast.error('Erro ao solicitar dados!')
-        console.log(error)
-      }
-      setIsLoading(false)
-    }
-    getData()
-  }, [])
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     setIsLoading(true)
-  //     try {
-  //       const vacationRequestArray: VacationRequestData[] = []
-  //       const querySnapshot = await getDocs(query(collection(firestore, 'vacation_request')))
-  //       querySnapshot.forEach(doc => {
-  //         vacationRequestArray.push(doc.data() as VacationRequestData)
-  //       })
-
-  //       setVacationRequest(vacationRequestArray)
-  //     } catch (error) {
-  //       toast.error('Erro ao solicitar dados!')
-  //       console.log(error)
-  //     }
-  //     setIsLoading(false)
-  //   }
-  //   getData()
-  // }, [currentStaf, user])
-
-  // const years = [...new Set(vacationRequest.map(request => new Date(request.start_date?.toDate()).getFullYear()))]
-
-  const filterDepartmentos = departments.filter(dpt => dpt.organic_unit === organic_unit)
-
   const filterStaff = staff.filter(stf => stf.department === departmentId)
 
   const filteredReservations = vacationReservation.filter(reservation => reservation.year === year)
 
-  // const filterVacationRequests = vacationRequest.filter(vRequest =>
-  //   staff.some(
-  //     stf =>
-  //       stf.department === departmentId &&
-  //       stf.id === vRequest.staffId &&
-  //       year === new Date(vRequest?.start_date?.toDate()).getFullYear()
-  //   )
-  // )
+  const onSubmit = async (values: FieldValues) => {
+    try {
+      setIsLoading(true)
+      const newRef = doc(collection(firestore, 'vacation_reservation'))
+
+      await setDoc(newRef, {
+        ...values,
+        id: newRef.id,
+        staffId: third_request ? values.staffId : currentStaf?.id
+      })
+
+      getData()
+      toast.success('Atualizado com sucesso!')
+
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+      toast.error('Erro ao actualizar dados!')
+      setIsLoading(false)
+    }
+  }
 
   const columns: GridColDef[] = [
     {
@@ -289,6 +296,7 @@ export default function VacationMap({}) {
         )
       }
     },
+
     {
       field: 'janeiro',
       minWidth: 20,
@@ -603,108 +611,223 @@ export default function VacationMap({}) {
     }
   ]
 
+  const componentRef = useRef<HTMLDivElement>(null)
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: 'Mapa de Ferias'
+  })
+
+  const data = {
+    department: departments?.find(dpt => dpt.id === departmentId)?.name,
+    staff: filterStaff,
+    vacationReservation: filteredReservations
+  } as PrintDataProps
+
   return (
-    <Card>
-      <CardHeader title='Mapa de Férias' />
-      <Divider />
-      <ModalProgressBar open={isLoading} />
-      <CardContent>
-        <Grid container spacing={5}>
-          {[roles.humanResoursesChief, roles.admin].includes(user!.role) && (
-            <>
-              <Grid item xs={12} sm={4}>
-                <CustomAutocomplete
-                  fullWidth
-                  options={organicUnit}
-                  getOptionLabel={option => `${option.name}`}
-                  renderInput={params => (
-                    <CustomTextField
-                      {...params}
-                      label='Unidade Orgânica'
-                      error={!!errors.organic_unit}
-                      helperText={errors.organic_unit?.message}
-                    />
-                  )}
-                  onChange={(_, selectedOption) => {
-                    setValue('organic_unit', selectedOption?.id || '')
-                  }}
-                />
+    <>
+      <div style={{ display: 'none' }}>
+        <VacationMap data={data} ref={componentRef} />
+      </div>
+      <Card>
+        <CardHeader title='Marcação Anual de Férias' />
+        <Divider />
+        <ModalProgressBar open={isLoading} />
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={5}>
+              <Grid item xs={12} sm={12}>
+                <Button onClick={handlePrint} variant='contained' startIcon={<IconifyIcon icon={'tabler:printer'} />}>
+                  Imprimir
+                </Button>
               </Grid>
-              <Grid item xs={12} sm={5}>
-                <CustomAutocomplete
-                  fullWidth
-                  options={filterDepartmentos}
-                  getOptionLabel={option => `${option.name}-${option.shortname}`}
-                  renderInput={params => (
-                    <CustomTextField
-                      {...params}
-                      label='Departamento'
-                      error={!!errors.departmentId}
-                      helperText={errors.departmentId?.message}
+
+              {[roles.humanResoursesChief, roles.admin].includes(user!.role) && (
+                <>
+                  <Grid item xs={12} sm={4}>
+                    <CustomAutocomplete
+                      fullWidth
+                      options={organicUnit}
+                      getOptionLabel={option => `${option.name}`}
+                      renderInput={params => (
+                        <CustomTextField
+                          {...params}
+                          label='Unidade Orgânica'
+                          error={!!errors.organic_unit}
+                          helperText={errors.organic_unit?.message}
+                        />
+                      )}
+                      onChange={(_, selectedOption) => {
+                        setValue('organic_unit', selectedOption?.id || '')
+                      }}
                     />
-                  )}
-                  onChange={(_, selectedOption) => {
-                    setValue('departmentId', selectedOption?.id || '')
-                  }}
-                />
-              </Grid>
-            </>
-          )}
-          <Grid item xs={12} sm={3}>
-            <CustomAutocomplete
-              fullWidth
-              options={anos}
-              getOptionLabel={option => `${option.year}`}
-              renderInput={params => (
-                <CustomTextField {...params} label='Ano' error={!!errors.year} helperText={errors.year?.message} />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <CustomAutocomplete
+                      fullWidth
+                      options={filterDepartmentos}
+                      getOptionLabel={option => `${option.name}-${option.shortname}`}
+                      renderInput={params => (
+                        <CustomTextField
+                          {...params}
+                          label='Departamento'
+                          error={!!errors.departmentId}
+                          helperText={errors.departmentId?.message}
+                        />
+                      )}
+                      onChange={(_, selectedOption) => {
+                        setValue('departmentId', selectedOption?.id || '')
+                      }}
+                    />
+                  </Grid>
+                </>
               )}
-              onChange={(_, selectedOption) => {
-                setValue('year', selectedOption?.year || 0)
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            <Button variant='contained' startIcon={<IconifyIcon icon='tabler:printer' />}>
-              Imprimir
-            </Button>
-          </Grid>
-        </Grid>
-      </CardContent>
-      <CardContent>
-        <Grid container spacing={5}>
-          <>
-            <Grid item xs={12} sm={12}>
-              <DataGrid
-                autoHeight
-                pagination
-                rows={year !== 0 ? filterStaff : []}
-                disableDensitySelector
-                disableColumnFilter
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 10
+
+              <Grid item xs={12} sm={4}>
+                <Controller
+                  name='year'
+                  control={control}
+                  render={({ field }) => (
+                    <CustomTextField
+                      label='Ano'
+                      fullWidth
+                      required
+                      select
+                      {...field}
+                      error={!!errors.year}
+                      placeholder={errors.year?.message}
+                    >
+                      {anos.map(ano => (
+                        <MenuItem key={ano.year} value={ano.year}>
+                          {ano.year}
+                        </MenuItem>
+                      ))}
+                    </CustomTextField>
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={12}>
+                <FormControl>
+                  <FormControlLabel
+                    label='Marcar Férias'
+                    control={
+                      <Checkbox
+                        color='success'
+                        checked={checkReservation}
+                        onChange={() => setCheckReservation(!checkReservation)}
+                      />
                     }
-                  }
-                }}
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true
-                  }
-                }}
-                pageSizeOptions={[10, 25, 50]}
-              />
+                  />
+                </FormControl>
+              </Grid>
+
+              {checkReservation && (
+                <>
+                  <Grid item xs={12} sm={4}>
+                    <Controller
+                      name='month'
+                      control={control}
+                      render={({ field }) => (
+                        <CustomTextField
+                          label='Mês'
+                          fullWidth
+                          required
+                          defaultValue=''
+                          select
+                          {...field}
+                          error={!!errors.month}
+                          placeholder={errors.month?.message}
+                        >
+                          {months.map(month => (
+                            <MenuItem key={month.id} value={month.id}>
+                              {month.name}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                      )}
+                    />
+                  </Grid>
+                  {roles.technician !== user?.role && (
+                    <Grid item xs={12} sm={12}>
+                      <FormControl>
+                        <FormControlLabel
+                          label='Marcar férias para outro colaborador'
+                          sx={errors.third_request ? { color: 'error.main' } : null}
+                          control={
+                            <Checkbox
+                              color='success'
+                              sx={errors.third_request ? { color: 'error.main' } : null}
+                              {...register('third_request')}
+                            />
+                          }
+                        />
+                      </FormControl>
+                    </Grid>
+                  )}
+                  {third_request && (
+                    <Grid item xs={12} sm={8}>
+                      <CustomAutocomplete
+                        fullWidth
+                        options={filterStaff}
+                        getOptionLabel={option => `${option.name} ${option.surname}-${option.personal_email}` || ''}
+                        renderInput={params => (
+                          <CustomTextField
+                            {...params}
+                            sx={{ mb: 4 }}
+                            label='Marcar para:'
+                            error={!!errors.staffId}
+                            helperText={errors.staffId?.message}
+                          />
+                        )}
+                        onChange={(_, option) => {
+                          setValue('staffId', option?.id || '')
+                        }}
+                      />
+                    </Grid>
+                  )}
+
+                  <Grid item xs={12} sm={12}>
+                    <Button variant='contained' type='submit' startIcon={<IconifyIcon icon='tabler:device-floppy' />}>
+                      Reservar
+                    </Button>
+                  </Grid>
+                </>
+              )}
+
+              <Grid item xs={12} sm={12}>
+                <DataGrid
+                  autoHeight
+                  pagination
+                  rows={filterStaff}
+                  disableDensitySelector
+                  disableColumnFilter
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 10
+                      }
+                    }
+                  }}
+                  slots={{ toolbar: GridToolbar }}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true
+                    }
+                  }}
+                  pageSizeOptions={[10, 25, 50]}
+                />
+              </Grid>
             </Grid>
-          </>
-        </Grid>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </>
   )
 }
 
-VacationMap.acl = {
+MarcarFerias.acl = {
   action: 'create',
-  subject: 'vacation-map'
+  subject: 'vacation-marcation'
 }
