@@ -110,7 +110,7 @@ export default function Departamento({}) {
     {
       flex: 0.3,
       field: 'organic_unit',
-      headerName: 'Abreviatura',
+      headerName: 'Unidade Orgânica',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {organicUnits.find(ou => ou.id === params.row.organic_unit)?.name}

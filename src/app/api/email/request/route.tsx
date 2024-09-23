@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import VacationRequestEmail from 'src/emails/vacation_request'
-import { renderToStaticMarkup } from 'react-dom/server'
+
+// import VacationRequestEmail from 'src/emails/vacation_request'
 
 export async function POST(request: Request) {
   const { email, name, start_date, end_date, days } = await request.json()
@@ -18,16 +18,12 @@ export async function POST(request: Request) {
     }
   })
 
-  const emailHtml = renderToStaticMarkup(
-    <VacationRequestEmail name={name} start_date={start_date} end_date={end_date} days={days} />
-  )
-
   // Send email using the transporter
   await transporter.sendMail({
     from: process.env.SMTP_FROM, // Sender address
     to: email, // List of receivers
     subject: 'Pedido de Férias', // Subject line
-    html: emailHtml // HTML body
+    html: '<h1>Hello World</h1>' // HTML body
   })
 
   return NextResponse.json({ message: 'Email sent', status: 'OK' })
