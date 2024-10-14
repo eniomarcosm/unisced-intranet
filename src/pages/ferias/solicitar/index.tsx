@@ -325,16 +325,21 @@ export default function VacationRequestForm({}) {
         days: values.days
       })
 
-      await fetch('/api/email/request', {
+      await fetch('/api/email/vacation/request/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: 'eniomarcos48@gmail.com',
+          email: 'mr.eniomarcos@gmail.com',
           name: `${currentStaff?.name} ${currentStaff?.surname}`,
-          start_date: values.start_date,
-          end_date: values.end_date,
+          position: 'Técnico',
+          start_date: new Intl.DateTimeFormat('pt-BR', {
+            dateStyle: 'long'
+          }).format(values.start_date),
+          end_date: new Intl.DateTimeFormat('pt-BR', {
+            dateStyle: 'long'
+          }).format(values.end_date),
           days: values.days
         })
       })

@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 import * as handlebars from 'handlebars'
-import { Email_Template } from 'src/emails/email_template'
+import { EmailRequestTemplate } from 'src/emails/emailRequest'
 
 // import VacationRequestEmail from 'src/emails/vacation_request'
 
 export async function POST(request: Request) {
-  const { email, name, start_date, end_date, days } = await request.json()
-  console.log(email, name, start_date, end_date, days)
+  const { name, email, position, subject, current_date, start_date, end_date, days } = await request.json()
+
+  // console.log(email, name, start_date, end_date, days)
 
   // Create a transporter using SMTP
   const transporter = nodemailer.createTransport({
@@ -26,18 +27,31 @@ export async function POST(request: Request) {
     from: process.env.SMTP_FROM, // Sender address
     to: email, // List of receivers
     subject: 'Pedido de Férias', // Subject line
-    html: compeleEmail(name, 'Pedido de Ferias') // HTML body
+    html: compileEmail(name, position, subject, current_date, start_date, end_date, days) // HTML body
   })
 
   return NextResponse.json({ message: 'Email sent', status: 'OK' })
 }
 
-export function compeleEmail(name: string, subject: string) {
-  const template = handlebars.compile(Email_Template)
+export function compileEmail(
+  name: string,
+  position: string,
+  subject: string,
+  current_date: string,
+  start_date: string,
+  end_date: string,
+  days: string
+) {
+  const template = handlebars.compile(EmailRequestTemplate)
 
   const htmlBody = template({
     name: name,
-    subject: subject
+    position: position,
+    subject: subject,
+    current_date: current_date,
+    start_date: start_date,
+    end_date: end_date,
+    days: days
   })
 
   return htmlBody

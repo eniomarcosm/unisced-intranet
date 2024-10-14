@@ -13,17 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User{
-//   id Int @id @default(autoincrement())
-//   email String @unique
-//   username String @unique
-//   password String @unique
-//   name String
-//   surname String
-//   createdAt DateTime @default(now())
-//   updateAt DateTime @updatedAt
-// }
-
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -107,5 +96,34 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VacationRequest {
+  id          Int      @id @default(autoincrement())
+  reason      String
+  userId      Int
+  requestDate DateTime
+  startDate   DateTime
+  endDate     DateTime
+}
 
-// model 
+model OrganicUnit {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  Department Department[]
+}
+
+model Department {
+  id            Int    @id @default(autoincrement())
+  name          String
+  shortName     String
+  organicUnitId Int
+
+  organicUnit OrganicUnit @relation(fields: [organicUnitId], references: [id], onDelete: Cascade)
+}
+
+
+model JobPosition{
+    id     Int    @id @default(autoincrement())
+    
+}
+// model

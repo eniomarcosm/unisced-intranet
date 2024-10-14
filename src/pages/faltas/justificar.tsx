@@ -175,6 +175,19 @@ export default function JustificarFalta({}) {
             request_date: new Date()
           })
 
+          await fetch('/api/email/request', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: user?.email,
+              name: `${currentStaff?.name} ${currentStaff?.surname}`,
+              start_date: values.start_date,
+              end_date: values.end_date
+            })
+          })
+
           toast.success('Dados carregados com sucesso!')
           setIsLoading(false)
           reset()
