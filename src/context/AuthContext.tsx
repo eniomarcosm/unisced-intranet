@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // ** React Imports
 import { createContext, useEffect, useState, ReactNode } from 'react'
 
@@ -6,6 +7,8 @@ import { useRouter } from 'next/router'
 
 // ** Config
 import authConfig from 'src/configs/auth'
+
+import { jwtDecode } from 'jwt-decode'
 
 // ** Types
 import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
@@ -44,8 +47,27 @@ const AuthProvider = ({ children }: Props) => {
       const storedUserData = window.localStorage.getItem(authConfig.userData)
       const userData: UserDataType = storedUserData ? JSON.parse(storedUserData) : null
 
-      if (storedUserData) {
-        setUser({ ...userData })
+      const token = window.localStorage.getItem(authConfig.storageTokenKeyName)
+
+      if (token) {
+        try {
+          // Decode the token to get its expiration time
+          const decoded = jwtDecode(token)
+
+          // Get the current timestamp in seconds
+          const currentTime = Math.floor(Date.now() / 1000)
+
+          // Check if the token is expired
+          if (decoded.exp && decoded.exp > currentTime) {
+            handleLogout()
+          } else {
+            if (storedUserData) {
+              setUser({ ...userData })
+            }
+          }
+        } catch (error) {
+          console.log('Invalid token', error)
+        }
       }
       setLoading(false)
     }
@@ -99,7 +121,7 @@ const AuthProvider = ({ children }: Props) => {
             }
           })
           .catch(error => {
-            console.log(error)
+            console.log('here', error)
             if (errorCallback) errorCallback(error)
           })
       })

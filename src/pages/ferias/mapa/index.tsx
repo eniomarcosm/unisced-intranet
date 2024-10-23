@@ -99,6 +99,7 @@ export default function MarcarFerias({}) {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
     watch
   } = useForm<MarcacaoData>({ resolver: zodResolver(marcacaoSchema) })
 
@@ -241,6 +242,30 @@ export default function MarcarFerias({}) {
   const filteredReservations = vacationReservation.filter(reservation => reservation.year === year)
 
   const onSubmit = async (values: FieldValues) => {
+    try {
+      setIsLoading(true)
+      const newRef = doc(collection(firestore, 'vacation_reservation'))
+
+      await setDoc(newRef, {
+        ...values,
+        id: newRef.id,
+        staffId: third_request ? values.staffId : currentStaf?.id
+      })
+
+      getData()
+      toast.success('Atualizado com sucesso!')
+
+      setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+      toast.error('Erro ao actualizar dados!')
+      setIsLoading(false)
+    }
+  }
+
+  const onSubmitData = async () => {
+    const values = getValues()
+
     try {
       setIsLoading(true)
       const newRef = doc(collection(firestore, 'vacation_reservation'))
@@ -788,7 +813,14 @@ export default function MarcarFerias({}) {
                   )}
 
                   <Grid item xs={12} sm={12}>
-                    <Button variant='contained' type='submit' startIcon={<IconifyIcon icon='tabler:device-floppy' />}>
+                    <Button
+                      variant='contained'
+                      type='submit'
+                      onClick={onSubmitData}
+                      startIcon={<IconifyIcon icon='tabler:device-floppy' />}
+
+                      // disabled={!isValid}
+                    >
                       Reservar
                     </Button>
                   </Grid>

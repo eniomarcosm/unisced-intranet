@@ -50,7 +50,7 @@ const navigation = (): VerticalNavItemsType => {
       icon: 'tabler:clock-exclamation',
       children: [
         {
-          title: 'Marcação de Férias',
+          title: 'Mapa de Férias',
           path: '/ferias/mapa',
           action: 'create',
           subject: 'vacation-marcation'
@@ -74,12 +74,12 @@ const navigation = (): VerticalNavItemsType => {
         //   action: 'read',
         //   subject: 'vacation-calendar'
         // },
-        {
-          title: 'Mapa de Férias',
-          path: '/ferias/reservadas',
-          action: 'read',
-          subject: 'vacation-map'
-        },
+        // {
+        //   title: 'Mapa de Férias',
+        //   path: '/ferias/reservadas',
+        //   action: 'read',
+        //   subject: 'vacation-map'
+        // },
         {
           title: 'Solicitações de Férias',
           path: '/ferias/solicitacao',

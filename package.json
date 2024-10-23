@@ -59,6 +59,7 @@
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.2.0",
     "jsonwebtoken": "8.5.1",
+    "jwt-decode": "^4.0.0",
     "keen-slider": "6.8.5",
     "next": "14.2.2",
     "next-auth": "^4.24.7",

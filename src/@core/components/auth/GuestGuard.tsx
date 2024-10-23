@@ -23,7 +23,7 @@ const GuestGuard = (props: GuestGuardProps) => {
     }
 
     if (window.localStorage.getItem('user')) {
-      router.replace('/sca')
+      router.replace('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.route])

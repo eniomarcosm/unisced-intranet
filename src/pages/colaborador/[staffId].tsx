@@ -238,7 +238,7 @@ export default function CreateStaff({}) {
                       required
                       fullWidth
                       error={!!errors.name}
-                      placeholder={errors.name?.message}
+                      helperText={errors.name?.message}
                       {...field}
                     />
                   )}
@@ -254,7 +254,7 @@ export default function CreateStaff({}) {
                       required
                       fullWidth
                       error={!!errors.surname}
-                      placeholder={errors.surname?.message}
+                      helperText={errors.surname?.message}
                       {...field}
                     />
                   )}
@@ -274,7 +274,7 @@ export default function CreateStaff({}) {
                       onChange={field.onChange}
                       // {...field}
                       error={!!errors.gender}
-                      placeholder={errors.gender?.message}
+                      helperText={errors.gender?.message}
                     >
                       {genders.map(gender => (
                         <MenuItem key={gender} value={gender}>
@@ -300,7 +300,7 @@ export default function CreateStaff({}) {
                       onChange={field.onChange}
                       // {...field}
                       error={!!errors.id_type}
-                      placeholder={errors.id_type?.message}
+                      helperText={errors.id_type?.message}
                     >
                       {idTypes.map(idType => (
                         <MenuItem key={idType} value={idType}>
@@ -323,7 +323,7 @@ export default function CreateStaff({}) {
                       disabled={!id_type}
                       fullWidth
                       error={!!errors.id_number}
-                      placeholder={errors.id_number?.message}
+                      helperText={errors.id_number?.message}
                       {...field}
                     />
                   )}
@@ -340,7 +340,7 @@ export default function CreateStaff({}) {
                       required
                       fullWidth
                       error={!!errors.nuit}
-                      placeholder={errors.nuit?.message}
+                      helperText={errors.nuit?.message}
                       {...field}
                     />
                   )}
@@ -399,7 +399,7 @@ export default function CreateStaff({}) {
                       type='email'
                       fullWidth
                       error={!!errors.personal_email}
-                      placeholder={errors.personal_email?.message}
+                      helperText={errors.personal_email?.message}
                       {...field}
                     />
                   )}
@@ -415,7 +415,7 @@ export default function CreateStaff({}) {
                       required
                       fullWidth
                       error={!!errors.contact1}
-                      placeholder={errors.contact1?.message}
+                      helperText={errors.contact1?.message}
                       {...field}
                     />
                   )}
@@ -430,7 +430,7 @@ export default function CreateStaff({}) {
                       label='Contacto Secundário'
                       fullWidth
                       error={!!errors.contact2}
-                      placeholder={errors.contact2?.message}
+                      helperText={errors.contact2?.message}
                       {...field}
                     />
                   )}
@@ -449,7 +449,7 @@ export default function CreateStaff({}) {
                       label='Codico do Trabalhador'
                       fullWidth
                       error={!!errors.staff_code}
-                      placeholder={errors.staff_code?.message}
+                      helperText={errors.staff_code?.message}
                       {...field}
                     />
                   )}
@@ -468,7 +468,7 @@ export default function CreateStaff({}) {
                       value={field.value || ''}
                       onChange={field.onChange}
                       error={!!errors.organic_unit}
-                      placeholder={errors.organic_unit?.message}
+                      helperText={errors.organic_unit?.message}
 
                       // {...field}
                     >
@@ -491,12 +491,12 @@ export default function CreateStaff({}) {
                       fullWidth
                       required
                       defaultValue={selectedStaff?.department}
+                      helperText={errors.department?.message}
                       select
                       value={field.value || ''}
                       onChange={field.onChange}
                       // {...field}
                       error={!!errors.department}
-                      placeholder={errors.department?.message}
                     >
                       {filterDepartmentos.map(dpt => (
                         <MenuItem key={dpt.id} value={dpt.id}>
