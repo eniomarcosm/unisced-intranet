@@ -103,6 +103,7 @@ model VacationRequest {
   requestDate DateTime
   startDate   DateTime
   endDate     DateTime
+  staffId     Int
 }
 
 model OrganicUnit {
@@ -121,9 +122,8 @@ model Department {
   organicUnit OrganicUnit @relation(fields: [organicUnitId], references: [id], onDelete: Cascade)
 }
 
-
-model JobPosition{
-    id     Int    @id @default(autoincrement())
-    
+model JobPosition {
+  id Int @id @default(autoincrement())
 }
+
 // model

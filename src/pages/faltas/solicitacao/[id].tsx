@@ -523,49 +523,52 @@ export default function JustifacaoFaltas({}) {
               </Grid>
 
               {/*// ** Division */}
-              <Grid item xs={12} sm={4}>
-                <CustomTextField
-                  fullWidth
-                  disabled
-                  label='Parecer do Superior'
-                  value={
-                    absenceRequest?.superior?.is_approved === 1
-                      ? 'Aprovado'
-                      : absenceRequest?.superior?.is_approved === 2
-                      ? 'Reprovado'
-                      : undefined
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <CustomTextField
-                  fullWidth
-                  disabled
-                  label='Parecer dos Recursos Humanos'
-                  value={
-                    absenceRequest?.human_resources?.is_approved === 1
-                      ? 'Aprovado'
-                      : absenceRequest?.human_resources?.is_approved === 2
-                      ? 'Reprovado'
-                      : undefined
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} sm={4}>
-                <CustomTextField
-                  fullWidth
-                  disabled
-                  label='Parecer da Direcção'
-                  value={
-                    absenceRequest?.director?.is_approved === 1
-                      ? 'Aprovado'
-                      : absenceRequest?.director?.is_approved === 2
-                      ? 'Reprovado'
-                      : undefined
-                  }
-                />
-              </Grid>
-
+              {
+                <>
+                  <Grid item xs={12} sm={4}>
+                    <CustomTextField
+                      fullWidth
+                      disabled
+                      label='Despacho do Superior'
+                      value={
+                        absenceRequest?.superior?.is_approved === 1
+                          ? 'Autorizado'
+                          : absenceRequest?.superior?.is_approved === 2
+                          ? 'Não Autorizado'
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <CustomTextField
+                      fullWidth
+                      disabled
+                      label='Despacho dos Recursos Humanos'
+                      value={
+                        absenceRequest?.human_resources?.is_approved === 1
+                          ? 'Autorizado'
+                          : absenceRequest?.human_resources?.is_approved === 2
+                          ? 'Não Autorizado'
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <CustomTextField
+                      fullWidth
+                      disabled
+                      label='Despacho da Direcção'
+                      value={
+                        absenceRequest?.director?.is_approved === 1
+                          ? 'Autorizado'
+                          : absenceRequest?.director?.is_approved === 2
+                          ? 'Não Autorizado'
+                          : undefined
+                      }
+                    />
+                  </Grid>
+                </>
+              }
               <ModalForm isOpen={openModal} onClose={handleCloseModal} onSubmit={onSubmit} />
 
               <AbsenceModalForm

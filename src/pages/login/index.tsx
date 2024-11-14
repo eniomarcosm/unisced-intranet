@@ -103,9 +103,11 @@ const schema = yup.object().shape({
 const LoginPage = ({}) => {
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [isSubmitting, setIsSubmiting] = useState<boolean>(false)
 
   // ** Hooks
   const auth = useAuth()
+
   const theme = useTheme()
 
   // const bgColors = useBgColor()
@@ -126,6 +128,7 @@ const LoginPage = ({}) => {
   })
 
   const onSubmit = async (data: FieldValues) => {
+    setIsSubmiting(true)
     const { email, password } = data
 
     // try {
@@ -142,14 +145,20 @@ const LoginPage = ({}) => {
     // }
 
     // console.log(signInData)
-
-    auth.login({ email, password, rememberMe }, () => {
-      setError('email', {
-        type: 'manual',
-        message: 'Email ou Senha Inválidos'
+    try {
+      auth.login({ email, password, rememberMe }, () => {
+        setError('email', {
+          type: 'manual',
+          message: 'Email ou Senha Inválidos'
+        })
+        toast.error('Email ou Senha Inválidos')
       })
+    } catch (error) {
+      console.log('Erro')
       toast.error('Email ou Senha Inválidos')
-    })
+    } finally {
+      setIsSubmiting(false)
+    }
   }
 
   // const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
@@ -272,7 +281,7 @@ const LoginPage = ({}) => {
                   Esqueceu Senha?
                 </Typography>
               </Box>
-              <Button fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
+              <Button disabled={isSubmitting} fullWidth type='submit' variant='contained' sx={{ mb: 4 }}>
                 Entrar
               </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -296,7 +305,6 @@ const LoginPage = ({}) => {
                 <Button
                   fullWidth
                   color='info'
-                  disabled
                   variant='contained'
                   onClick={() => signIn('google', { callBackUrl: 'https://www.google.com' })}
                   sx={{ mb: 4, border: '4', bgcolor: '#4285f4' }}

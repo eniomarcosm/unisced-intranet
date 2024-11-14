@@ -92,7 +92,7 @@ const VacationDateModalForm: React.FC<DateModalFormProps> = ({
   })
 
   const absencedDaysThisYear = filterAbsenceRequests?.reduce(
-    (totalDays, obj) => totalDays + obj.human_resources.day_vacations,
+    (totalDays, obj) => totalDays + obj?.human_resources?.day_vacations,
     0
   )
 

@@ -114,7 +114,7 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
                   control={control}
                   render={({ field }) => (
                     <CustomTextField
-                      label='Parecer'
+                      label='Despacho'
                       fullWidth
                       required
                       defaultValue={0}
@@ -125,8 +125,8 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
                       placeholder={errors.is_approved?.message}
                     >
                       <MenuItem value={0}>Selecione Resposta</MenuItem>
-                      <MenuItem value={1}>Aprovado</MenuItem>
-                      <MenuItem value={2}>Reprovado</MenuItem>
+                      <MenuItem value={1}>Autorizado</MenuItem>
+                      <MenuItem value={2}>Não Autorizado</MenuItem>
                     </CustomTextField>
                   )}
                 />
@@ -204,7 +204,7 @@ const AbsenceModalForm: React.FC<DateModalFormProps> = ({ isOpen, onClose, onSub
                   control={control}
                   render={({ field }) => (
                     <CustomTextField
-                      label='Parecer'
+                      label='Despacho'
                       required
                       multiline
                       minRows={3}

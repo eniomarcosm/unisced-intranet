@@ -6,6 +6,10 @@ export type LoginParams = {
   rememberMe?: boolean
 }
 
+export type TokenLoginParams = {
+  token: string
+}
+
 export type UserDataType = {
   uid: string
   fullName: string
@@ -26,4 +30,5 @@ export type AuthValuesType = {
   setLoading: (value: boolean) => void
   setUser: (value: UserDataType | null) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
+  tokenLogin: (params: TokenLoginParams, errorCallback?: ErrCallbackType) => void
 }

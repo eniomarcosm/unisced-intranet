@@ -1,13 +1,11 @@
 import {
   Alert,
+  Box,
   Button,
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
   Divider,
-  FormControl,
-  FormControlLabel,
   Grid,
   GridProps,
   IconButton,
@@ -15,7 +13,6 @@ import {
   Typography,
   styled
 } from '@mui/material'
-import { Box } from '@mui/system'
 import { ChangeEvent, Fragment, useEffect, useState } from 'react'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 import CustomChip from 'src/@core/components/mui/chip'
@@ -57,7 +54,6 @@ const vacationRequestSchema = z
     id: z.string().optional(),
     staffId: z.string().optional(),
     supervisor: z.string().array().optional(),
-    notify: z.boolean().optional(),
     reason: z.string(),
     start_date: z.date(),
     end_date: z.date().optional(),
@@ -156,7 +152,6 @@ export default function VacationRequestForm({}) {
     handleSubmit,
     reset,
     setValue,
-    register,
     watch,
     formState: { errors, isValid }
   } = useForm<VacationRequest>({
@@ -333,7 +328,8 @@ export default function VacationRequestForm({}) {
         body: JSON.stringify({
           email: 'mr.eniomarcos@gmail.com',
           name: `${currentStaff?.name} ${currentStaff?.surname}`,
-          position: 'Técnico',
+          position: 'Colaborador(a)',
+          subject: 'Pedido de Férias',
           start_date: new Intl.DateTimeFormat('pt-BR', {
             dateStyle: 'long'
           }).format(values.start_date),
@@ -597,27 +593,6 @@ export default function VacationRequestForm({}) {
                     )}
                   />
                 </Grid>
-                {/* <Grid item xs={2} sm={1}>
-                      <IconButton
-                        sx={{ border: 1, borderColor: 'red', mt: 4 }}
-                        color='error'
-                        onClick={() => handleRemoveFields(index)}
-                      >
-                        <IconifyIcon fontSize='1.25rem' icon='tabler:trash' />
-                      </IconButton>
-                    </Grid> */}
-
-                {/* <Grid item xs={12} sm={12}>
-                  <Button
-                    variant='contained'
-                    disabled={vacation_schedule.length > 1}
-                    color='success'
-                    onClick={handleAddFields}
-                  >
-                    Parcelar
-                  </Button>
-                </Grid> */}
-
                 <Grid item xs={12} sm={8}>
                   <CustomAutocomplete
                     fullWidth
@@ -639,7 +614,7 @@ export default function VacationRequestForm({}) {
                     }}
                   />
                 </Grid>
-                <Grid item xl={12} sm={6} xs={12}>
+                {/* <Grid item xl={12} sm={6} xs={12}>
                   <FormControl>
                     <FormControlLabel
                       label='Notificar por email'
@@ -653,7 +628,7 @@ export default function VacationRequestForm({}) {
                       }
                     />
                   </FormControl>
-                </Grid>
+                </Grid> */}
               </Fragment>
             ) : (
               <Grid item xs={12} sm={12}>

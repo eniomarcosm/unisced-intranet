@@ -374,155 +374,157 @@ export default function ViewVacationRequest({}) {
             <Grid item xs={12} sm={12}>
               <Divider>Detalhes da Solicitação</Divider>
             </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Data de Início'
-                value={currentVacationRequest?.start_date?.toDate().toLocaleDateString('pt-BR')}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Data de Término'
-                value={currentVacationRequest?.end_date?.toDate().toLocaleDateString('pt-BR')}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Número de Dias Solicitados'
-                value={currentVacationRequest?.days}
-              />
-            </Grid>
 
-            <Grid item xs={12} sm={8}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Motivos'
-                multiline
-                rows={2}
-                value={currentVacationRequest?.reason}
-              />
-            </Grid>
+            <>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Data de Início'
+                  value={currentVacationRequest?.start_date?.toDate().toLocaleDateString('pt-BR')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Data de Término'
+                  value={currentVacationRequest?.end_date?.toDate().toLocaleDateString('pt-BR')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Número de Dias Solicitados'
+                  value={currentVacationRequest?.days}
+                />
+              </Grid>
 
-            {/* <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Número de Dias Restantes'
-                value={currentVacationRequest?.days}
-              />
-            </Grid> */}
+              <Grid item xs={12} sm={8}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Motivos'
+                  multiline
+                  rows={2}
+                  value={currentVacationRequest?.reason}
+                />
+              </Grid>
 
-            <Grid item xs={12} sm={12}>
-              <Divider>Resposta da Solicitação</Divider>
-            </Grid>
-            <Grid item xs={12} sm={4}>
+              {/* <Grid item xs={12} sm={4}>
               <CustomTextField
-                multiline
-                minRows={2}
-                fullWidth
-                disabled
-                label='Observação do Superior'
-                value={currentVacationRequest?.superior?.comment}
+              fullWidth
+              disabled
+              label='Número de Dias Restantes'
+              value={currentVacationRequest?.days}
               />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                multiline
-                minRows={2}
-                fullWidth
-                disabled
-                label='Observação dos Recursos Humanos'
-                value={currentVacationRequest?.human_resources?.comment}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                multiline
-                minRows={2}
-                fullWidth
-                disabled
-                label='Observação da Direcção'
-                value={currentVacationRequest?.director?.comment}
-              />
-            </Grid>
+              </Grid> */}
 
-            {/*// ** Division */}
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Data do Superior '
-                value={currentVacationRequest?.superior?.updated_at?.toDate().toLocaleDateString('pt-BR')}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Data dos Recursos Humanos'
-                value={currentVacationRequest?.human_resources?.updated_at?.toDate().toLocaleDateString('pt-BR')}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Data da Direcção'
-                value={currentVacationRequest?.director?.updated_at?.toDate().toLocaleDateString('pt-BR')}
-              />
-            </Grid>
+              <Grid item xs={12} sm={12}>
+                <Divider>Resposta da Solicitação</Divider>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  disabled
+                  label='Observação do Superior'
+                  value={currentVacationRequest?.superior?.comment}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  disabled
+                  label='Observação dos Recursos Humanos'
+                  value={currentVacationRequest?.human_resources?.comment}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  multiline
+                  minRows={2}
+                  fullWidth
+                  disabled
+                  label='Observação da Direcção'
+                  value={currentVacationRequest?.director?.comment}
+                />
+              </Grid>
 
-            {/*// ** Division */}
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Parecer do Superior'
-                value={
-                  currentVacationRequest?.superior?.is_approved === 1
-                    ? 'Aprovado'
-                    : currentVacationRequest?.superior?.is_approved === 2
-                    ? 'Reprovado'
-                    : undefined
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Parecer dos Recursos Humanos'
-                value={
-                  currentVacationRequest?.human_resources?.is_approved === 1
-                    ? 'Aprovado'
-                    : currentVacationRequest?.human_resources?.is_approved === 2
-                    ? 'Reprovado'
-                    : undefined
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <CustomTextField
-                fullWidth
-                disabled
-                label='Parecer da Direcção'
-                value={
-                  currentVacationRequest?.director?.is_approved === 1
-                    ? 'Aprovado'
-                    : currentVacationRequest?.director?.is_approved === 2
-                    ? 'Reprovado'
-                    : undefined
-                }
-              />
-            </Grid>
+              {/*// ** Division */}
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Data do Superior '
+                  value={currentVacationRequest?.superior?.updated_at?.toDate().toLocaleDateString('pt-BR')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Data dos Recursos Humanos'
+                  value={currentVacationRequest?.human_resources?.updated_at?.toDate().toLocaleDateString('pt-BR')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Data da Direcção'
+                  value={currentVacationRequest?.director?.updated_at?.toDate().toLocaleDateString('pt-BR')}
+                />
+              </Grid>
 
+              {/*// ** Division */}
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Despacho do Superior'
+                  value={
+                    currentVacationRequest?.superior?.is_approved === 1
+                      ? 'Autorizado'
+                      : currentVacationRequest?.superior?.is_approved === 2
+                      ? 'Não Autorizado'
+                      : undefined
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Despacho dos Recursos Humanos'
+                  value={
+                    currentVacationRequest?.human_resources?.is_approved === 1
+                      ? 'Autorizado'
+                      : currentVacationRequest?.human_resources?.is_approved === 2
+                      ? 'Não Autorizado'
+                      : undefined
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <CustomTextField
+                  fullWidth
+                  disabled
+                  label='Despacho da Direcção'
+                  value={
+                    currentVacationRequest?.director?.is_approved === 1
+                      ? 'Autorizado'
+                      : currentVacationRequest?.director?.is_approved === 2
+                      ? 'Não Autorizado'
+                      : undefined
+                  }
+                />
+              </Grid>
+            </>
             <ModalForm isOpen={openModal} onClose={handleCloseModal} onSubmit={onSubmit} />
 
             <DateModalForm

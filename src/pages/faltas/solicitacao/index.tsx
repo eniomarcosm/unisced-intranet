@@ -193,19 +193,7 @@ export default function SolicitacaoFaltas({}) {
     let count = 0
 
     filterAbsenceRequests.forEach(request => {
-      if (request?.director?.is_approved === index) {
-        count++
-      }
-
-      if (request?.human_resources?.is_approved === index) {
-        count++
-      }
-
       if (request?.superior?.is_approved === index) {
-        count++
-      }
-
-      if (request?.human_resources?.is_approved === undefined) {
         count++
       }
     })
@@ -296,45 +284,12 @@ export default function SolicitacaoFaltas({}) {
         </Typography>
       )
     },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'is_approved_rh',
-      headerName: 'Superior',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.superior?.is_approved === 1 ? (
-            <CustomChip rounded size='small' color='success' label={vacation_status[1].label} />
-          ) : params.row?.superior?.is_approved === 2 ? (
-            <CustomChip rounded size='small' color='error' label={vacation_status[2].label} />
-          ) : (
-            <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
-          )}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'is_aproved_boss',
-      headerName: 'RH',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.human_resources?.is_approved === 1 ? (
-            <CustomChip rounded size='small' color='success' label={vacation_status[1].label} />
-          ) : params.row?.human_resources?.is_approved === 2 ? (
-            <CustomChip rounded size='small' color='error' label={vacation_status[2].label} />
-          ) : (
-            <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
-          )}
-        </Typography>
-      )
-    },
+
     {
       flex: 0.2,
       minWidth: 100,
       field: 'is_approved',
-      headerName: 'Direcção',
+      headerName: 'Estado',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row?.director?.is_approved === 1 ? (
@@ -403,7 +358,7 @@ export default function SolicitacaoFaltas({}) {
                   <Typography variant='h5' sx={{ mb: 0.5 }}>
                     {getStatusCount(1)}
                   </Typography>
-                  <Typography variant='body2'>Aprovadas</Typography>
+                  <Typography variant='body2'>Autorizados</Typography>
                 </Box>
                 <CustomAvatar skin='light' color='success' sx={{ width: 45, height: 45 }}>
                   <IconifyIcon icon='tabler:hourglass' fontSize='1.32rem' />
@@ -433,7 +388,7 @@ export default function SolicitacaoFaltas({}) {
                   <Typography variant='h5' sx={{ mb: 0.5 }}>
                     {getStatusCount(2)}
                   </Typography>
-                  <Typography variant='body2'>Reprovados</Typography>
+                  <Typography variant='body2'>Não Autorizados</Typography>
                 </Box>
                 <CustomAvatar skin='light' color='error' sx={{ width: 45, height: 45 }}>
                   <IconifyIcon icon='tabler:hourglass-off' fontSize='1.32rem' />

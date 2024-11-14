@@ -175,16 +175,21 @@ export default function JustificarFalta({}) {
             request_date: new Date()
           })
 
-          await fetch('/api/email/request', {
+          await fetch('/api/email/absence/request', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              email: user?.email,
+              email: 'mr.eniomarcos@gmail.com',
+              subject: 'Justificação de falta',
               name: `${currentStaff?.name} ${currentStaff?.surname}`,
-              start_date: values.start_date,
-              end_date: values.end_date
+              start_date: new Intl.DateTimeFormat('pt-BR', {
+                dateStyle: 'long'
+              }).format(values.start_date),
+              end_date: new Intl.DateTimeFormat('pt-BR', {
+                dateStyle: 'long'
+              }).format(values.end_date)
             })
           })
 
@@ -226,12 +231,12 @@ export default function JustificarFalta({}) {
             <ImgStyled src={imgSrc} alt='Foto do Comprovativo' />
             <div>
               <ButtonStyled component='label' variant='contained' htmlFor='account-settings-upload-image'>
-                Carregar Comprovatido
+                Carregar Comprovativo
                 <input
                   hidden
                   type='file'
                   value={inputValue}
-                  accept='image/png, image/jpeg, image/jpg'
+                  accept='image/png, image/jpeg, image/jpg, application/pdf'
                   onChange={handleInputImageChange}
                   id='account-settings-upload-image'
                 />
@@ -240,7 +245,7 @@ export default function JustificarFalta({}) {
                 Limpar
               </ResetButtonStyled>
               <Typography sx={{ mt: 4, color: 'text.disabled' }}>
-                Formatos permitidos PNG, JPG e JPEG. Tamanho Máximo de 8MB
+                Formatos permitidos: PNG, JPG, JPEG, e PDF. Tamanho Máximo de 8MB
               </Typography>
             </div>
           </Box>

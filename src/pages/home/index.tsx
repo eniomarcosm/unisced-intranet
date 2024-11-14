@@ -151,42 +151,8 @@ const Home = ({}) => {
     {
       flex: 0.2,
       minWidth: 100,
-      field: 'is_approved_rh',
-      headerName: 'Superior',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.superior?.is_approved === 1 ? (
-            <CustomChip rounded size='small' color='success' label={vacation_status[1].label} />
-          ) : params.row?.superior?.is_approved === 2 ? (
-            <CustomChip rounded size='small' color='error' label={vacation_status[2].label} />
-          ) : (
-            <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
-          )}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'is_aproved_boss',
-      headerName: 'RH',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.human_resources?.is_approved === 1 ? (
-            <CustomChip rounded size='small' color='success' label={vacation_status[1].label} />
-          ) : params.row?.human_resources?.is_approved === 2 ? (
-            <CustomChip rounded size='small' color='error' label={vacation_status[2].label} />
-          ) : (
-            <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
-          )}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
       field: 'is_approved',
-      headerName: 'Direcção',
+      headerName: 'Estado',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row?.director?.is_approved === 1 ? (
@@ -249,57 +215,11 @@ const Home = ({}) => {
       )
     },
 
-    // {
-    //   flex: 0.2,
-    //   minWidth: 50,
-    //   field: 'days',
-    //   headerName: 'Dias',
-    //   renderCell: (params: GridRenderCellParams) => (
-    //     <Typography variant='body2' sx={{ color: 'text.primary' }}>
-    //       {params.row.days}
-    //     </Typography>
-    //   )
-    // },
-
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'is_approved_rh',
-      headerName: 'Superior',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.superior?.is_approved === 1 ? (
-            <CustomChip rounded size='small' color='success' label={vacation_status[1].label} />
-          ) : params.row?.superior?.is_approved === 2 ? (
-            <CustomChip rounded size='small' color='error' label={vacation_status[2].label} />
-          ) : (
-            <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
-          )}
-        </Typography>
-      )
-    },
-    {
-      flex: 0.2,
-      minWidth: 100,
-      field: 'is_aproved_boss',
-      headerName: 'RH',
-      renderCell: (params: GridRenderCellParams) => (
-        <Typography variant='body2' sx={{ color: 'text.primary' }}>
-          {params.row?.human_resources?.is_approved === 1 ? (
-            <CustomChip rounded size='small' color='success' label={vacation_status[1].label} />
-          ) : params.row?.human_resources?.is_approved === 2 ? (
-            <CustomChip rounded size='small' color='error' label={vacation_status[2].label} />
-          ) : (
-            <CustomChip rounded size='small' color='warning' label={vacation_status[0].label} />
-          )}
-        </Typography>
-      )
-    },
     {
       flex: 0.2,
       minWidth: 100,
       field: 'is_approved',
-      headerName: 'Direcção',
+      headerName: 'Estado',
       renderCell: (params: GridRenderCellParams) => (
         <Typography variant='body2' sx={{ color: 'text.primary' }}>
           {params.row?.director?.is_approved === 1 ? (

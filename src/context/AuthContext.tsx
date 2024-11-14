@@ -11,7 +11,7 @@ import authConfig from 'src/configs/auth'
 import { jwtDecode } from 'jwt-decode'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType, TokenLoginParams } from './types'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -20,7 +20,18 @@ const defaultProvider: AuthValuesType = {
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
-  logout: () => Promise.resolve()
+  logout: () => Promise.resolve(),
+  tokenLogin: () => Promise.resolve()
+}
+
+interface DecodedToken {
+  exp: number
+  user_id: string
+  name: string
+  email: string
+  email_verified: boolean
+  phone_number?: string
+  [key: string]: any // Allow other token fields
 }
 
 // ** FireBase Auth
@@ -32,6 +43,19 @@ const AuthContext = createContext(defaultProvider)
 
 type Props = {
   children: ReactNode
+}
+
+const isTokenExpired = (token: string): boolean => {
+  const decodedToken: any = jwtDecode(token)
+  const currentTime = Date.now() / 1000
+
+  if (!decodedToken.exp) {
+    return false
+  }
+
+  console.log('hellllll', decodedToken.exp < currentTime)
+
+  return decodedToken.exp < currentTime
 }
 
 const AuthProvider = ({ children }: Props) => {
@@ -51,16 +75,8 @@ const AuthProvider = ({ children }: Props) => {
 
       if (token) {
         try {
-          // Decode the token to get its expiration time
-          const decoded = jwtDecode(token)
-
-          // Get the current timestamp in seconds
-          const currentTime = Math.floor(Date.now() / 1000)
-
-          // Check if the token is expired
-          if (decoded.exp && decoded.exp > currentTime) {
-            handleLogout()
-          } else {
+          if (isTokenExpired(token as string)) handleLogout()
+          else {
             if (storedUserData) {
               setUser({ ...userData })
             }
@@ -142,13 +158,72 @@ const AuthProvider = ({ children }: Props) => {
       .catch(error => console.error(error))
   }
 
+  const handleTokenLogin = (params: TokenLoginParams, errorCallback?: ErrCallbackType) => {
+    if (isTokenExpired(params.token)) {
+      console.log('Token expirou')
+
+      window.location.href = 'https://uninet.unisced.edu.mz'
+    }
+
+    // Decode the token
+    const decoded: DecodedToken = jwtDecode(params.token)
+
+    if (decoded.user_id) {
+      // Fetch user data from Firestore
+      getDoc(doc(firestore, 'user', decoded.user_id))
+        .then(res => {
+          if (res.exists()) {
+            // Fetch additional staff data
+            getDoc(doc(firestore, 'staff', res.data().staff)).then(staffRes => {
+              if (staffRes.exists()) {
+                const userData = {
+                  uid: decoded?.user_id,
+                  fullName: decoded?.name,
+                  email: decoded?.email,
+                  emailVerified: decoded?.email_verified,
+                  phoneNumber: decoded?.phone_number,
+                  role: res.data().role,
+                  roleName: res.data().roleName,
+                  avatar: staffRes.data()?.photoURL ?? decoded.photo_url,
+                  department: staffRes.data()?.department,
+                  staffId: staffRes.id
+                } as UserDataType
+
+                console.log(userData)
+
+                setUser({ ...userData })
+
+                // Store user data in localStorage
+                window.localStorage.setItem(authConfig.userData, JSON.stringify(userData))
+                window.localStorage.setItem(authConfig.storageTokenKeyName, params.token)
+
+                // Redirect to the specified URL or the homepage
+
+                router.replace('/')
+              }
+            })
+          } else {
+            window.location.href = 'https://uninet.unisced.edu.mz'
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error)
+          console.log('here', error)
+          if (errorCallback) errorCallback(error)
+
+          // Handle Firestore errors here (e.g., redirect or show error message)
+        })
+    }
+  }
+
   const values = {
     user,
     loading,
     setUser,
     setLoading,
     login: handleLogin,
-    logout: handleLogout
+    logout: handleLogout,
+    tokenLogin: handleTokenLogin
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

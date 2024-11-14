@@ -1,39 +1,47 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
-import * as handlebars from 'handlebars'
+import handlebars from 'handlebars'
+
+// import { google } from 'googleapis'
 import { EmailRequestTemplate } from 'src/emails/emailRequest'
 
-// import VacationRequestEmail from 'src/emails/vacation_request'
-
 export async function POST(request: Request) {
-  const { name, email, position, subject, current_date, start_date, end_date, days } = await request.json()
+  try {
+    const { name, email, position, subject, start_date, end_date, days } = await request.json()
 
-  // console.log(email, name, start_date, end_date, days)
+    const current_date = new Intl.DateTimeFormat('pt-BR', {
+      dateStyle: 'long'
+    }).format(new Date())
 
-  // Create a transporter using SMTP
-  const transporter = nodemailer.createTransport({
-    // host: process.env.SMTP_HOST,
-    // port: parseInt(process.env.SMTP_PORT || '587', 10),
-    // secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
-    service: 'gmail',
-    auth: {
-      user: 'eniomarcos48', // SMTP username
-      pass: 'dbta xznp kkwd frne' // SMTP password
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: 587,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD
+      }
+    })
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: subject,
+      html: compileEmail(name, position, subject, current_date, start_date, end_date, days)
     }
-  })
 
-  // Send email using the transporter
-  await transporter.sendMail({
-    from: process.env.SMTP_FROM, // Sender address
-    to: email, // List of receivers
-    subject: 'Pedido de Férias', // Subject line
-    html: compileEmail(name, position, subject, current_date, start_date, end_date, days) // HTML body
-  })
+    const result = await transporter.sendMail(mailOptions)
 
-  return NextResponse.json({ message: 'Email sent', status: 'OK' })
+    console.log('Email sent successfully:', result)
+
+    return NextResponse.json({ message: 'Email sent', status: 'OK' })
+  } catch (error) {
+    console.error('Error sending email:', error)
+
+    return NextResponse.json({ error: 'Error sending email' }, { status: 500 })
+  }
 }
 
-export function compileEmail(
+function compileEmail(
   name: string,
   position: string,
   subject: string,
