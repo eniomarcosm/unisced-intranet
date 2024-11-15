@@ -21,6 +21,7 @@ const defaultProvider: AuthValuesType = {
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
+  loginGoogle: () => Promise.resolve(),
   tokenLogin: () => Promise.resolve()
 }
 
@@ -35,7 +36,7 @@ interface DecodedToken {
 }
 
 // ** FireBase Auth
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
 import { auth, firestore } from 'src/configs/firebaseConfig'
 import { doc, getDoc } from 'firebase/firestore'
 
@@ -52,8 +53,6 @@ const isTokenExpired = (token: string): boolean => {
   if (!decodedToken.exp) {
     return false
   }
-
-  console.log('hellllll', decodedToken.exp < currentTime)
 
   return decodedToken.exp < currentTime
 }
@@ -90,6 +89,61 @@ const AuthProvider = ({ children }: Props) => {
 
     initAuth()
   }, [])
+
+  const handleLoginGoogle = async (errorCallback?: ErrCallbackType) => {
+    const provider = new GoogleAuthProvider()
+
+    try {
+      // Sign in with Google
+      const response = await signInWithPopup(auth, provider)
+
+      // Get user data from the Google sign-in response
+      const user = response.user
+      const token = await user.getIdToken()
+
+      // Store the token locally if "rememberMe" is set (optional logic)
+      // You can customize this based on your app's state or rememberMe flag
+      window.localStorage.setItem(authConfig.storageTokenKeyName, token)
+
+      // Fetch additional user data from Firestore
+      const userDocRef = doc(firestore, 'user', user.uid)
+      const userDoc = await getDoc(userDocRef)
+
+      if (userDoc.exists()) {
+        const staffDocRef = doc(firestore, 'staff', userDoc.data().staff)
+        const staffDoc = await getDoc(staffDocRef)
+
+        if (staffDoc.exists()) {
+          const userData = {
+            uid: user.uid,
+            fullName: user.displayName,
+            email: user.email,
+            emailVerified: user.emailVerified,
+            phoneNumber: user.phoneNumber,
+            role: userDoc.data().role,
+            roleName: userDoc.data().roleName,
+            avatar: staffDoc.data()?.photoURL ?? user.photoURL,
+            department: staffDoc.data()?.department,
+            staffId: staffDoc.id
+          } as UserDataType
+
+          // Set user data in your app's state/context
+          setUser({ ...userData })
+
+          // Optionally store user data in localStorage if "rememberMe" is set
+          window.localStorage.setItem(authConfig.userData, JSON.stringify(userData))
+
+          // Redirect user to the desired page
+          const returnUrl = router.query.returnUrl
+          const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+          router.replace(redirectURL as string)
+        }
+      }
+    } catch (error: any) {
+      console.error('Error during Google login:', error)
+      if (errorCallback) errorCallback(error)
+    }
+  }
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     signInWithEmailAndPassword(auth, params.email, params.password)
@@ -210,8 +264,6 @@ const AuthProvider = ({ children }: Props) => {
           console.error('Error fetching data:', error)
           console.log('here', error)
           if (errorCallback) errorCallback(error)
-
-          // Handle Firestore errors here (e.g., redirect or show error message)
         })
     }
   }
@@ -223,6 +275,7 @@ const AuthProvider = ({ children }: Props) => {
     setLoading,
     login: handleLogin,
     logout: handleLogout,
+    loginGoogle: handleLoginGoogle,
     tokenLogin: handleTokenLogin
   }
 

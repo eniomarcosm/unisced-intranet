@@ -22,7 +22,7 @@ const MaskImg = styled('img')(({ theme }) => ({
   }
 }))
 
-const FooterIllustrationsV2 = (props) => {
+const FooterIllustrationsV2 = (props: FooterIllustrationsV2Prop) => {
   // ** Props
   const { image, height, className } = props
 

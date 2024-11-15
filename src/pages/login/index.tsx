@@ -1,31 +1,24 @@
 // ** React Imports
-import { useState, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 // ** Next Imports
-import Link from 'next/link'
+// import Link from 'next/link'
 
-// ** MUI Components
-// import Alert from '@mui/material/Alert'
-import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
 import Box, { BoxProps } from '@mui/material/Box'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { styled, useTheme } from '@mui/material/styles'
-import InputAdornment from '@mui/material/InputAdornment'
-import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
-import { Divider, Button } from '@mui/material'
 
-// ** Custom Component Import
-import CustomTextField from 'src/@core/components/mui/text-field'
+// import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
+import { Button } from '@mui/material'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
-import * as yup from 'yup'
-import { useForm, Controller, FieldValues } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+// import * as yup from 'yup'
+// import { useForm, FieldValues } from 'react-hook-form';
+// import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -42,7 +35,6 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 
-import { signIn } from 'next-auth/react'
 import { uniscedLogoFullText } from 'src/constants/user'
 import Image from 'next/image'
 import toast from 'react-hot-toast'
@@ -74,21 +66,21 @@ const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   }
 }))
 
-const LinkStyled = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  color: `${theme.palette.primary.main} !important`
-}))
+// const LinkStyled = styled(Link)(({ theme }) => ({
+//   textDecoration: 'none',
+//   color: `${theme.palette.primary.main} !important`
+// }))
 
-const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
-  '& .MuiFormControlLabel-label': {
-    color: theme.palette.text.secondary
-  }
-}))
+// const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
+//   '& .MuiFormControlLabel-label': {
+//     color: theme.palette.text.secondary
+//   }
+// }))
 
-const schema = yup.object().shape({
-  email: yup.string().email().required('Este campo não pode ser nulo!'),
-  password: yup.string().min(4).required('Este campo não pode ser nulo!')
-})
+// const schema = yup.object().shape({
+//   email: yup.string().email().required('Este campo não pode ser nulo!'),
+//   password: yup.string().min(4).required('Este campo não pode ser nulo!')
+// })
 
 // const defaultValues = {
 //   password: 'admin',
@@ -101,9 +93,9 @@ const schema = yup.object().shape({
 // }
 
 const LoginPage = ({}) => {
-  const [rememberMe, setRememberMe] = useState<boolean>(true)
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [isSubmitting, setIsSubmiting] = useState<boolean>(false)
+  // const [rememberMe, setRememberMe] = useState<boolean>(true)
+  // const [showPassword, setShowPassword] = useState<boolean>(false)
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   // ** Hooks
   const auth = useAuth()
@@ -117,47 +109,61 @@ const LoginPage = ({}) => {
   // ** Vars
   // const { skin } = settings
 
-  const {
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    mode: 'onBlur',
-    resolver: yupResolver(schema)
-  })
+  // const {
+  //   control,
+  //   setError,
+  //   handleSubmit,
+  //   formState: { errors }
+  // } = useForm({
+  //   mode: 'onBlur',
+  //   resolver: yupResolver(schema)
+  // })
 
-  const onSubmit = async (data: FieldValues) => {
-    setIsSubmiting(true)
-    const { email, password } = data
+  // const onSubmit = async (data: FieldValues) => {
+  //   setIsSubmitting(true)
+  //   const { email, password } = data
 
-    // try {
-    //   const signInData = await signIn('credentials', {
-    //     email: email,
-    //     password: password
-    //   })
+  //   // try {
+  //   //   const signInData = await signIn('credentials', {
+  //   //     email: email,
+  //   //     password: password
+  //   //   })
 
-    //   if (signInData?.error) {
-    //     setError('email', { type: 'manual', message: signInData.error })
-    //   }
-    // } catch (error) {
-    //   console.log('erro', error)
-    // }
+  //   //   if (signInData?.error) {
+  //   //     setError('email', { type: 'manual', message: signInData.error })
+  //   //   }
+  //   // } catch (error) {
+  //   //   console.log('erro', error)
+  //   // }
 
-    // console.log(signInData)
+  //   // console.log(signInData)
+  //   try {
+  //     auth.login({ email, password, rememberMe }, () => {
+  //       setError('email', {
+  //         type: 'manual',
+  //         message: 'Email ou Senha Inválidos'
+  //       })
+  //       toast.error('Email ou Senha Inválidos')
+  //     })
+  //   } catch (error) {
+  //     console.log('Erro')
+  //     toast.error('Email ou Senha Inválidos')
+  //   } finally {
+  //     setIsSubmitting(false)
+  //   }
+  // }
+
+  // Google Sign-In Handler
+  const handleGoogleSignIn = async () => {
     try {
-      auth.login({ email, password, rememberMe }, () => {
-        setError('email', {
-          type: 'manual',
-          message: 'Email ou Senha Inválidos'
-        })
-        toast.error('Email ou Senha Inválidos')
+      const login = auth.loginGoogle(() => {
+        toast.error('Usuário Inválido!')
       })
+
+      console.log(login)
     } catch (error) {
-      console.log('Erro')
-      toast.error('Email ou Senha Inválidos')
-    } finally {
-      setIsSubmiting(false)
+      console.error('Error during Google sign-in', error)
+      toast.error('Erro ao fazer login com Google')
     }
   }
 
@@ -192,7 +198,7 @@ const LoginPage = ({}) => {
             justifyContent: 'center'
           }}
         >
-          <Box sx={{ width: '100%', maxWidth: 400 }}>
+          <Box sx={{ width: '100%', maxWidth: 500 }}>
             <div style={{ width: '100%', maxWidth: '600px', margin: 'auto', padding: '0 6px' }}>
               <Image
                 src={uniscedLogoFullText}
@@ -203,14 +209,25 @@ const LoginPage = ({}) => {
               />
             </div>
 
-            <Box sx={{ my: 6 }}>
-              {/* <Typography variant='h3' sx={{ mb: 1.5 }}>
-                {`Bem vindo ao ${themeConfig.templateName}!`}
-              </Typography> */}
-              <Typography sx={{ color: 'text.secondary' }}>Introduza os dados de acesso!</Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column', // Arrange items vertically
+                alignItems: 'center', // Center horizontally
+                justifyContent: 'center', // Center vertically
+                textAlign: 'center', // Center text alignment
+                my: 6
+              }}
+            >
+              <Typography variant='h4' alignContent='center' justifyContent='center' sx={{ mb: 1.5 }}>
+                {`Seja Bem-vindo ao Sistema de Controlo de Absentismo`}
+              </Typography>
+              <Typography sx={{ color: 'text.secondary' }}>
+                Clique no botão abaixo e autentique-se usando a sua conta Google institucional!
+              </Typography>
             </Box>
 
-            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            {/* <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
               <Box sx={{ mb: 4 }}>
                 <Controller
                   name='email'
@@ -300,20 +317,52 @@ const LoginPage = ({}) => {
                 }}
               >
                 ou
-              </Divider>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button
-                  fullWidth
-                  color='info'
-                  variant='contained'
-                  onClick={() => signIn('google', { callBackUrl: 'https://www.google.com' })}
-                  sx={{ mb: 4, border: '4', bgcolor: '#4285f4' }}
-                  startIcon={<Icon icon='mdi:google' />}
-                >
-                  Entrar com Google
-                </Button>
-              </Box>
-            </form>
+                </form> */}
+            {/* <Divider
+              sx={{
+                color: 'text.disabled',
+                '& .MuiDivider-wrapper': { px: 6 },
+                fontSize: theme.typography.body2.fontSize,
+
+                my: theme => `${theme.spacing(6)} !important`
+              }}
+            ></Divider> */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Button
+                color='info'
+                variant='contained'
+                onClick={handleGoogleSignIn}
+                sx={{
+                  mb: 4,
+                  paddingY: 3,
+                  paddingX: 6,
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  textTransform: 'none', // Disable uppercase for a modern look
+                  bgcolor: '#4285f4',
+                  color: '#fff',
+                  '&:hover': {
+                    bgcolor: '#357ae8' // Slightly darker shade on hover
+                  },
+                  borderRadius: 4,
+                  boxShadow: '0 4px 10px rgba(66, 133, 244, 0.3)' // Soft glow for focus
+                }}
+                startIcon={
+                  <Icon
+                    icon='mdi:google'
+                    fontSize='1.5rem' // Adjust size as needed
+                  />
+                }
+              >
+                Entrar com Google
+              </Button>
+            </Box>
           </Box>
         </Box>
       </RightWrapper>

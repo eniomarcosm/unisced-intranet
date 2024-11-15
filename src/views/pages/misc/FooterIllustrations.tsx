@@ -18,7 +18,7 @@ const MaskImg = styled('img')(() => ({
   position: 'absolute'
 }))
 
-const FooterIllustrations = (props) => {
+const FooterIllustrations = (props: FooterIllustrationsProp) => {
   // ** Props
   const { image } = props
 

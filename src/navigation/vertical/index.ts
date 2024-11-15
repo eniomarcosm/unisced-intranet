@@ -116,12 +116,6 @@ const navigation = (): VerticalNavItemsType => {
           path: '/faltas/solicitacao',
           action: 'create',
           subject: 'absence-response'
-        },
-        {
-          title: 'Configurações',
-          path: '/faltas/configurações',
-          action: 'create',
-          subject: 'absence-config'
         }
       ]
     },
