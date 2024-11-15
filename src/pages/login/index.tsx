@@ -156,11 +156,10 @@ const LoginPage = ({}) => {
   // Google Sign-In Handler
   const handleGoogleSignIn = async () => {
     try {
-      const login = auth.loginGoogle(() => {
+      auth.loginGoogle(error => {
         toast.error('Usuário Inválido!')
+        console.log(error)
       })
-
-      console.log(login)
     } catch (error) {
       console.error('Error during Google sign-in', error)
       toast.error('Erro ao fazer login com Google')
