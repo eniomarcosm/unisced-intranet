@@ -219,7 +219,7 @@ export default function SolicitacaoFaltas({}) {
       })
       .catch(error => {
         console.error(error)
-        toast.error('Houve um erro ao eliminar o prato!')
+        toast.error('Houve um erro ao eliminar a solicitação!')
       })
   }
 

@@ -39,6 +39,7 @@ interface DecodedToken {
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
 import { auth, firestore } from 'src/configs/firebaseConfig'
 import { doc, getDoc } from 'firebase/firestore'
+import toast from 'react-hot-toast'
 
 const AuthContext = createContext(defaultProvider)
 
@@ -188,11 +189,15 @@ const AuthProvider = ({ children }: Props) => {
                   router.replace(redirectURL as string)
                 }
               })
+            } else {
+              toast.error('Usuário não registado!')
             }
           })
           .catch(error => {
             console.log('here', error)
             if (errorCallback) errorCallback(error)
+
+            // toast.error('Usuário não registado!')
           })
       })
       .catch(err => {

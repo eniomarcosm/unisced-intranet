@@ -53,7 +53,7 @@ const vacationRequestSchema = z
   .object({
     id: z.string().optional(),
     staffId: z.string().optional(),
-    supervisor: z.string().array().optional(),
+    supervisor: z.string(),
     reason: z.string(),
     start_date: z.date(),
     end_date: z.date().optional(),
@@ -326,7 +326,7 @@ export default function VacationRequestForm({}) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: 'mr.eniomarcos@gmail.com',
+          email: `${values.supervisor} `,
           name: `${currentStaff?.name} ${currentStaff?.surname}`,
           position: 'Colaborador(a)',
           subject: 'Pedido de Férias',
@@ -346,7 +346,7 @@ export default function VacationRequestForm({}) {
 
       reset()
     } catch (error) {
-      toast.error('Erro ao cadastrar colaborador')
+      toast.error('Erro ao efectuar pedido de férias!')
       console.log(error)
     }
 
@@ -596,21 +596,19 @@ export default function VacationRequestForm({}) {
                 <Grid item xs={12} sm={8}>
                   <CustomAutocomplete
                     fullWidth
-                    multiple
                     options={supervisorStaff}
                     getOptionLabel={option => `${option.name} ${option.surname}-${option.personal_email}` || ''}
                     renderInput={params => (
                       <CustomTextField
                         {...params}
                         sx={{ mb: 4 }}
-                        label='Dar a conhecer'
+                        label='Dar a Conhecer ao Superior:'
                         error={!!errors.supervisor}
                         helperText={errors.supervisor?.message}
                       />
                     )}
-                    onChange={(_, selectedOptions) => {
-                      const selectedIds = selectedOptions.map(option => option?.id || '')
-                      setValue('supervisor', selectedIds || '')
+                    onChange={(_, selectedOption) => {
+                      setValue('supervisor', selectedOption?.personal_email || '')
                     }}
                   />
                 </Grid>

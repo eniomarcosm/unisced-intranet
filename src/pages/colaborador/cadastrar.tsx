@@ -268,7 +268,7 @@ export default function CreateStaff({}) {
 
         uploadTask.on('state_changed', handleProgress, handleError, handleComplete)
       } catch (error) {
-        toast.error('Erro ao cadastrar prato')
+        toast.error('Erro ao cadastrar colaborador!')
         console.error(error)
         setIsLoading(false)
       }

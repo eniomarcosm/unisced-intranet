@@ -38,7 +38,8 @@ const absenceSchema = z.object({
   start_date: z.any(),
   end_date: z.any(),
   evidenceURL: z.any(),
-  comment: z.string()
+  comment: z.string().optional(),
+  supervisor: z.string()
 })
 
 export const isWeekday = (date: Date) => {
@@ -51,6 +52,7 @@ export type AbsenceData = z.infer<typeof absenceSchema>
 export default function JustificarFalta({}) {
   const [currentStaff, setCurrentStaff] = useState<UserStaffData>()
   const [motivos, setMotivos] = useState<SelectiveData[]>([])
+  const [supervisorStaff, setSupervisorStaff] = useState<UserStaffData[]>([])
 
   const {
     control,
@@ -63,6 +65,30 @@ export default function JustificarFalta({}) {
 
   const { user } = useAuth()
   const router = useRouter()
+
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoading(true)
+      try {
+        const staffArray: UserStaffData[] = []
+        const querySnapshot = await getDocs(collection(firestore, 'staff'))
+        querySnapshot.forEach(doc => {
+          staffArray.push(doc.data() as UserStaffData)
+        })
+
+        const findStaff = staffArray.find(staff => staff.id === user!.staffId)
+        setCurrentStaff(findStaff)
+
+        const myDepartmentStaff = staffArray.filter(staff => staff.department === findStaff?.department)
+        setSupervisorStaff(myDepartmentStaff)
+      } catch (error) {
+        toast.error('Erro ao solicitar dados!')
+        console.log(error)
+      }
+      setIsLoading(false)
+    }
+    getData()
+  }, [user])
 
   useEffect(() => {
     const getData = async () => {
@@ -181,8 +207,8 @@ export default function JustificarFalta({}) {
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              email: 'mr.eniomarcos@gmail.com',
-              subject: 'Justificação de falta',
+              email: `${values.supervisor}`,
+              subject: 'Justificação de falta/dispensa',
               name: `${currentStaff?.name} ${currentStaff?.surname}`,
               start_date: new Intl.DateTimeFormat('pt-BR', {
                 dateStyle: 'long'
@@ -202,7 +228,7 @@ export default function JustificarFalta({}) {
 
         uploadTask.on('state_changed', handleProgress, handleError, handleComplete)
       } catch (error) {
-        toast.error('Erro ao cadastrar prato')
+        toast.error('Erro ao justificar falta!')
         console.error(error)
         setIsLoading(false)
       }
@@ -407,6 +433,25 @@ export default function JustificarFalta({}) {
                     {...field}
                   />
                 )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <CustomAutocomplete
+                fullWidth
+                options={supervisorStaff}
+                getOptionLabel={option => `${option.name} ${option.surname}-${option.personal_email}` || ''}
+                renderInput={params => (
+                  <CustomTextField
+                    {...params}
+                    sx={{ mb: 4 }}
+                    label='Dar a conhecer ao Superior:'
+                    error={!!errors.supervisor}
+                    helperText={errors.supervisor?.message}
+                  />
+                )}
+                onChange={(_, selectedOption) => {
+                  setValue('supervisor', selectedOption?.personal_email || '')
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={12}>

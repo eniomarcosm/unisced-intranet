@@ -1,4 +1,4 @@
-export const EmailRequestTemplate = `<!DOCTYPE html>
+export const EmailRequestAbsenceTemplate = `<!DOCTYPE html>
 <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
 
 <head>
@@ -291,24 +291,18 @@ export const EmailRequestTemplate = `<!DOCTYPE html>
 													<table class="heading_block block-1" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="text-align:center;width:100%;">
-																<h3 style="margin: 0; color: #000000; direction: ltr; font-family: 'Oswald', Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 22px; font-weight: normal; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 26.4px;"><span class="tinyMce-placeholder" style="word-break: break-word;"><strong>Início: </strong>{{start_date}}</span></h3>
+																<h3 style="margin: 0; color: #000000; direction: ltr; font-family: 'Oswald', Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 22px; font-weight: normal; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 26.4px;"><span class="tinyMce-placeholder" style="word-break: break-word;"><strong>De: </strong>{{start_date}}</span></h3>
 															</td>
 														</tr>
 													</table>
 													<table class="heading_block block-2" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
 														<tr>
 															<td class="pad" style="padding-top:10px;text-align:center;width:100%;">
-																<h3 style="margin: 0; color: #000000; direction: ltr; font-family: 'Oswald', Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 22px; font-weight: normal; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 26.4px;"><span class="tinyMce-placeholder" style="word-break: break-word;"><strong>Término: </strong>{{end_date}}</span></h3>
+																<h3 style="margin: 0; color: #000000; direction: ltr; font-family: 'Oswald', Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 22px; font-weight: normal; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 26.4px;"><span class="tinyMce-placeholder" style="word-break: break-word;"><strong>Até: </strong>{{end_date}}</span></h3>
 															</td>
 														</tr>
 													</table>
-													<table class="heading_block block-3" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-														<tr>
-															<td class="pad" style="padding-top:10px;text-align:center;width:100%;">
-																<h3 style="margin: 0; color: #000000; direction: ltr; font-family: 'Oswald', Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 22px; font-weight: normal; letter-spacing: normal; line-height: 120%; text-align: left; margin-top: 0; margin-bottom: 0; mso-line-height-alt: 26.4px;"><span class="tinyMce-placeholder" style="word-break: break-word;"><strong>Número de Dias: </strong>{{days}}</span></h3>
-															</td>
-														</tr>
-													</table>
+
 													<table class="paragraph_block block-4" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;">
 														<tr>
 															<td class="pad" style="padding-top:10px;">
@@ -368,7 +362,7 @@ export const EmailRequestTemplate = `<!DOCTYPE html>
 <center dir="false" style="color:#ffffff;font-family:Tahoma, sans-serif;font-size:16px">
 <![endif]-->
 
-<a href="https://absentismo.unisced.edu.mz/ferias/solicitacao/" target="_blank"><div style="background-color:#aa0619;border-bottom:0px solid transparent;border-left:0px solid transparent;border-radius:30px;border-right:0px solid transparent;border-top:0px solid transparent;color:#ffffff;display:inline-block;font-family:Oxygen, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;font-weight:400;mso-border-alt:none;padding-bottom:10px;padding-top:10px;text-align:center;text-decoration:none;width:auto;word-break:keep-all;"><span style="word-break: break-word; padding-left: 40px; padding-right: 40px; font-size: 16px; display: inline-block; letter-spacing: normal;"><span style="word-break: break-word; line-height: 32px;"><strong>VER SOLICITAÇÃO</strong></span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
+<a href="https://absentismo.unisced.edu.mz/faltas/solicitacao/" target="_blank"><div style="background-color:#aa0619;border-bottom:0px solid transparent;border-left:0px solid transparent;border-radius:30px;border-right:0px solid transparent;border-top:0px solid transparent;color:#ffffff;display:inline-block;font-family:Oxygen, Trebuchet MS, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Tahoma, sans-serif;font-size:16px;font-weight:400;mso-border-alt:none;padding-bottom:10px;padding-top:10px;text-align:center;text-decoration:none;width:auto;word-break:keep-all;"><span style="word-break: break-word; padding-left: 40px; padding-right: 40px; font-size: 16px; display: inline-block; letter-spacing: normal;"><span style="word-break: break-word; line-height: 32px;"><strong>VER SOLICITAÇÃO</strong></span></span></div><!--[if mso]></center></v:textbox></v:roundrect><![endif]-->
 																</div></a>
 															</td>
 														</tr>
